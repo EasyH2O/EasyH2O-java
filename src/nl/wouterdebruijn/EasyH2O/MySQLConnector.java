@@ -3,12 +3,6 @@ package nl.wouterdebruijn.EasyH2O;
 import java.sql.*;
 
 public class MySQLConnector
-{
-    package nl.wouterdebruijn.EasyH2O;
-
-import java.sql.*;
-
-    public class MySQLConnector
     {
         Connection con;
 
