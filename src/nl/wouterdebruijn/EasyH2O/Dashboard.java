@@ -1,9 +1,10 @@
 package nl.wouterdebruijn.EasyH2O;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Random;
+import java.sql.SQLException;
 
 /**
  * This class is bound to the JFrame.
@@ -11,24 +12,60 @@ import java.util.Random;
 public class Dashboard {
 
     private JPanel Dashboard;
-    private JLabel headerField;
+    private JLabel applicationTitle;
+    private JPanel contentPanel;
+    private JTextField formHostname;
+    private JTextField formUsername;
+    private JTextField formDatabase;
+    private JPasswordField formPassword;
+    private JLabel formHostnameLabel;
+    private JLabel formUsernameLabel;
+    private JLabel formDatabaseLabel;
+    private JLabel formPasswordLabel;
+    private JButton getLatestValueButton;
+    private JTextPane outputTextPlane;
+    private JLabel mySQLStatusLabel;
+    private JLabel mySQLStatusField;
+    private JButton formConfirm;
     private JButton randomTextButton;
     private JLabel outputLabel;
 
     static public JFrame jFrame;
 
     public Dashboard() {
-        randomTextButton.addActionListener(new ActionListener() {
 
+
+        formConfirm.addActionListener(new ActionListener() {
             /**
-             * This function is automatically generated then the listener was added to the button, this will execute then the button is pressed. Also provides a Action event. Not used for this example.
+             * "SQL Connect" button logic
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                outputLabel.setText(String.format("This is some random text, added to this label via logic%nHere is a random number: %d", new Random().nextInt(10)));
-                updateSize();
+                try {
+                    Main.mySQLConnector.disconnect();
+                    Main.mySQLConnector.connect(formHostname.getText(), formUsername.getText(), formDatabase.getText(), String.valueOf(formPassword.getPassword()));
+
+                    setMySQlStatus(Main.mySQLConnector.con.isClosed());
+
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         });
+    }
+
+    /**
+     * Set the status label to corresponding text and color.
+     * @param isDisconnected this could be false when the sql connection is active. Normally filled with con.isClosed()
+     */
+    public void setMySQlStatus(boolean isDisconnected) {
+        if (!isDisconnected) {
+            mySQLStatusField.setText("Connected");
+            mySQLStatusField.setForeground(Color.green);
+        } else {
+            mySQLStatusField.setText("Disconnected");
+            mySQLStatusField.setForeground(Color.red);
+        }
     }
 
     /**
