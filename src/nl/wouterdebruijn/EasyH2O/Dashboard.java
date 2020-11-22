@@ -34,7 +34,6 @@ public class Dashboard {
 
     public Dashboard() {
 
-
         formConfirm.addActionListener(new ActionListener() {
             /**
              * "SQL Connect" button logic
@@ -47,8 +46,8 @@ public class Dashboard {
 
                     setMySQlStatus(Main.mySQLConnector.con.isClosed());
 
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
+                } catch (SQLException throwable) {
+                    throwable.printStackTrace();
                 }
             }
         });

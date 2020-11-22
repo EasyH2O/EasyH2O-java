@@ -13,14 +13,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Program started!");
 
-        // Set JFrame look and feel to Windows instead of Java.
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
-
+        setUISystemDefault();
 
         Dashboard dashboard = new Dashboard();
         dashboard.createAndShow();
@@ -39,8 +32,18 @@ public class Main {
 
             // Test code for Connection, Returns false when connection is working.
             System.out.println("Are we closed? : " + mySQLConnector.con.isClosed());
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+    }
+
+    public static void setUISystemDefault() {
+        // Set JFrame look and feel to Windows instead of Java.
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
     }
 }
