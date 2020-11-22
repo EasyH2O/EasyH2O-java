@@ -3,6 +3,9 @@ package nl.wouterdebruijn.EasyH2O;
 import java.sql.SQLException;
 
 public class Main {
+
+    public static MySQLConnector mySQLConnector;
+
     /**
      * Main function, creates the Dashboard instance and draws the JFrame.
      */
@@ -15,13 +18,14 @@ public class Main {
         /*
          * Init MySQL Class.
          */
-        MySQLConnector mySQLConnector = new MySQLConnector();
+        mySQLConnector = new MySQLConnector();
 
         /*
+         * TEST (Returns error when params aren't filled.)
          * Call the connect function
          */
         try {
-            mySQLConnector.connect();
+            mySQLConnector.connect("localhost", "", "", "");
 
             // Test code for Connection, Returns false when connection is working.
             System.out.println("Are we closed? : " + mySQLConnector.con.isClosed());
