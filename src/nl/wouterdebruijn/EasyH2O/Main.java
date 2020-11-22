@@ -1,5 +1,6 @@
 package nl.wouterdebruijn.EasyH2O;
 
+import javax.swing.*;
 import java.sql.SQLException;
 
 public class Main {
@@ -11,6 +12,15 @@ public class Main {
      */
     public static void main(String[] args) {
         System.out.println("Program started!");
+
+        // Set JFrame look and feel to Windows instead of Java.
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
 
         Dashboard dashboard = new Dashboard();
         dashboard.createAndShow();
