@@ -6,7 +6,7 @@ public class MySQLConnector
 	{
 		Connection con;
 
-		String hostname = "";
+		String hostname = "localhost";
 		String user = "";
 		String database = "";
 		String password = "";
@@ -19,7 +19,7 @@ public class MySQLConnector
 
 				  To change the hostname / db / username / password please use the String variables above.
 				 */
-				this.con = DriverManager.getConnection (String.format("jdbc:mysql://%S/%S", hostname, database), user, password);
+				this.con = DriverManager.getConnection (String.format("jdbc:mysql://%s/%s", hostname, database), user, password);
 			}
 
 
