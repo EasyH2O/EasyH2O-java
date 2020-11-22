@@ -23,6 +23,7 @@ public class Main {
         try {
             mySQLConnector.connect();
 
+            // Test code for Connection, Returns false when connection is working.
             System.out.println("Are we closed? : " + mySQLConnector.con.isClosed());
         } catch (SQLException throwables) {
             throwables.printStackTrace();
