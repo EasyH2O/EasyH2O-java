@@ -36,8 +36,10 @@ public class Main {
             // Test code for Connection, Returns false when connection is working.
             System.out.println("Are we closed? : " + mySQLConnector.con.isClosed());
 
-            Boolean a =  printdatabase();
-            Boolean b = sendMicroBitData(microbitData);
+            Boolean a = false;
+            a = printdatabase();
+            Boolean b = false;
+            b = sendMicroBitData(microbitData);
             while (!a || !b){}
             mySQLConnector.disconnect();
 
