@@ -36,11 +36,9 @@ public class Main {
             // Test code for Connection, Returns false when connection is working.
             System.out.println("Are we closed? : " + mySQLConnector.con.isClosed());
 
-            Boolean a = false;
-            a = printdatabase();
-            Boolean b = false;
-            b = sendMicroBitData("RF,1,1,1,1,1;");
-            while (!a || !b){}
+            printdatabase();
+            sendMicroBitData("RF,1,1,1,1,1;");
+
             mySQLConnector.disconnect();
 
         } catch (SQLException throwable) {
@@ -58,7 +56,7 @@ public class Main {
         }
     }
 
-    public static boolean printdatabase () {
+    public static void printdatabase () {
         try {
             Statement statement = mySQLConnector.con.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM user;");
@@ -77,10 +75,9 @@ public class Main {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
-        return true;
     }
 
-    public static boolean sendMicroBitData(String microbitData) {
+    public static void sendMicroBitData(String microbitData) {
         try {
 
             PreparedStatement preparedStatement = mySQLConnector.con.prepareStatement("INSERT INTO `datapoint`(`regenton`, `data`) VALUES (1, ?)");
@@ -90,6 +87,5 @@ public class Main {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
-        return true;
     }
 }
