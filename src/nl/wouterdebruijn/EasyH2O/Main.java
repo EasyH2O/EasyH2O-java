@@ -39,7 +39,7 @@ public class Main {
             Boolean a = false;
             a = printdatabase();
             Boolean b = false;
-            b = sendMicroBitData(microbitData);
+            b = sendMicroBitData("RF,1,1,1,1,1;");
             while (!a || !b){}
             mySQLConnector.disconnect();
 
