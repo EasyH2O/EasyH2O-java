@@ -22,14 +22,21 @@ public class MySQLConnector {
         this.con = DriverManager.getConnection(String.format("jdbc:mysql://%s/%s", hostname, database), user, password);
     }
 
-    public void disconnect() throws SQLException {
+/**
+ * Close the connection to MySQL Database
+ * @throws SQLException Throws error if disconnect fails
+ */
+public void disconnect() throws SQLException {
         if (this.con != null) this.con.close();
     }
 
-    public ResultSet query() throws SQLException {
-        Statement stmt = this.con.createStatement();
-        String query = "select * from users;";
+/**
+ * Create, execute and return query
+ * @return Resultset
+ * @throws SQLException Throws error if function fails
+ */
+public ResultSet query(String query) throws SQLException {
+        Statement stmt = this.con.createStatement(); //create java statement
         return stmt.executeQuery(query);
-
     }
 }
