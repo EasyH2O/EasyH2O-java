@@ -65,7 +65,7 @@ public class Dashboard {
                 try {
                     Main.serialConnector.Send(); // Send getFloat command to Microbit
 
-                    TimeUnit.SECONDS.sleep(1);
+                    TimeUnit.SECONDS.sleep(1); // Wait for microbit
 
                     ResultSet resultSet = Main.mySQLConnector.query("SELECT * FROM datapoint ORDER BY id DESC LIMIT 10");
 
