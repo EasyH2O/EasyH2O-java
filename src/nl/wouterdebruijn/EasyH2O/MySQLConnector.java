@@ -34,7 +34,7 @@ public class MySQLConnector {
     /**
      * Create, execute and return query
      *
-     * @return Resultset
+     * @return ResultSet
      * @throws SQLException Throws error if function fails
      */
     public ResultSet query(String query) throws SQLException {
