@@ -4,7 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class is bound to the JFrame.
@@ -48,6 +50,40 @@ public class Dashboard {
 
                 } catch (SQLException throwable) {
                     throwable.printStackTrace();
+                }
+            }
+        });
+
+        getLatestValueButton.addActionListener(new ActionListener() {
+            /**
+             * Refresh data button on dashboard function triggers when clicked
+             *
+             * @param e Event prop (not used)
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Main.serialConnector.Send(); // Send getFloat command to Microbit
+
+                    TimeUnit.SECONDS.sleep(1);
+
+                    ResultSet resultSet = Main.mySQLConnector.query("SELECT * FROM datapoint ORDER BY id DESC LIMIT 10");
+
+                    // TODO: Change to table in later version
+
+                    StringBuilder text = new StringBuilder();
+
+                    while (resultSet.next()) {
+                        text.append(resultSet.getString("timestamp"));
+                        text.append(": ");
+                        text.append(resultSet.getString("data"));
+                        text.append("\n");
+                    }
+
+                    outputTextPlane.setText(text.toString());
+
+                } catch (SQLException | InterruptedException throwables) {
+                    throwables.printStackTrace();
                 }
             }
         });
