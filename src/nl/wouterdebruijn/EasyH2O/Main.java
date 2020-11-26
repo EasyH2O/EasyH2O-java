@@ -45,6 +45,11 @@ public class Main {
         serialConnector.Send();
     }
 
+    /**
+     * Set dashboard theme to system default (Looks nicer!)
+     *
+     * @Author Wouter
+     */
     public static void setUISystemDefault() {
         // Set JFrame look and feel to Windows instead of Java.
         try {

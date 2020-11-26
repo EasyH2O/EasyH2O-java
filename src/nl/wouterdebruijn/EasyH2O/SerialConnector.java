@@ -71,6 +71,8 @@ public class SerialConnector {
 
     /**
      * Event based reading
+     * <p>
+     * Properties are defined with the @Override functions returning values.
      */
     private static final class MessageListener implements SerialPortMessageListener {
         @Override
@@ -88,6 +90,13 @@ public class SerialConnector {
             return true;
         }
 
+        /**
+         * Incoming data event! This function runs when the microbit sends data.
+         *
+         * @param event Gives the event properties, not used at this time.
+         * @Author Erhan
+         * @Author Wouter
+         */
         @Override
         public void serialEvent(SerialPortEvent event) {
             byte[] delimitedMessage = event.getReceivedData();
