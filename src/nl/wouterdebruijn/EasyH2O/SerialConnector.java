@@ -4,6 +4,7 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 import static com.fazecast.jSerialComm.SerialPort.*;
@@ -71,7 +72,6 @@ public class SerialConnector {
 
     /**
      * Event based reading
-     * <p>
      * Properties are defined with the @Override functions returning values.
      */
     private static final class MessageListener implements SerialPortMessageListener {
@@ -101,6 +101,13 @@ public class SerialConnector {
         public void serialEvent(SerialPortEvent event) {
             byte[] delimitedMessage = event.getReceivedData();
             System.out.println("Received the following delimited message: " + new String(delimitedMessage));
+
+            try {
+                if (!Main.mySQLConnector.con.isClosed())
+                    Main.mySQLConnector.sendMicroBitData(new String(delimitedMessage));
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
+            }
         }
     }
 
