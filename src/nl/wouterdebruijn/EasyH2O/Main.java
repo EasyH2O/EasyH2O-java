@@ -44,6 +44,11 @@ public class Main {
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
+
+        SerialConnector serialConnector = new SerialConnector();
+        serialConnector.OpenPort();
+
+        serialConnector.Send();
     }
 
     public static void setUISystemDefault() {
