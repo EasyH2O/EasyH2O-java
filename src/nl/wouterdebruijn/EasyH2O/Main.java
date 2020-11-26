@@ -1,11 +1,11 @@
 package nl.wouterdebruijn.EasyH2O;
 
 import javax.swing.*;
-import java.sql.SQLException;
 
 public class Main {
 
     public static MySQLConnector mySQLConnector;
+    public static SerialConnector serialConnector;
 
     /**
      * Main function, creates the Dashboard instance and draws the JFrame.
@@ -22,27 +22,9 @@ public class Main {
          * Init MySQL Class.
          */
         mySQLConnector = new MySQLConnector();
+        serialConnector = new SerialConnector();
 
-        /*
-         * TEST (Returns error when params aren't filled.)
-         * Call the connect function
-         */
-        try {
-            mySQLConnector.connect("localhost", "root", "easy_h2o", "");
-
-            // Test code for Connection, Returns false when connection is working.
-            System.out.println("Are we closed? : " + mySQLConnector.con.isClosed());
-
-            mySQLConnector.disconnect();
-
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
-
-        SerialConnector serialConnector = new SerialConnector();
         serialConnector.OpenPort();
-
-        serialConnector.Send();
     }
 
     /**
