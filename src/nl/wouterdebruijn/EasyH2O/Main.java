@@ -6,6 +6,7 @@ public class Main {
 
     public static MySQLConnector mySQLConnector;
     public static SerialConnector serialConnector;
+    public static JFrameManager jFrameManager;
 
     /**
      * Main function, creates the Dashboard instance and draws the JFrame.
@@ -15,8 +16,9 @@ public class Main {
 
         setUISystemDefault();
 
-        Dashboard dashboard = new Dashboard();
-        dashboard.createAndShow();
+        jFrameManager = new JFrameManager("EasyH2O Alpha 0.0.1");
+        jFrameManager.setDefaultPanel(JFrameManager.Frames.preLaunch);
+        jFrameManager.visible(true);
 
         /*
          * Init MySQL Class.
