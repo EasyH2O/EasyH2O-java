@@ -45,7 +45,7 @@ public class PreLaunchForm {
             public void actionPerformed(ActionEvent e) {
                 try {
                     if (!Main.mySQLConnector.con.isClosed()) {
-                        Main.jFrameManager.setContentPane(JFrameManager.Frames.dashboard);
+                        Main.jFrameManager.setContentPane(JFrameManager.Frames.login);
                     } else {
                         throw new NullPointerException();
                     }

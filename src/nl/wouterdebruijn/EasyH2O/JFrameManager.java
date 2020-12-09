@@ -33,6 +33,7 @@ public class JFrameManager {
     public static class Frames {
         public static JPanel dashboard = new Dashboard().dashboard;
         public static JPanel preLaunch = new PreLaunchForm().preLaunch;
+        public static JPanel login = new Login().login;
     }
 
     private void rePack() {
