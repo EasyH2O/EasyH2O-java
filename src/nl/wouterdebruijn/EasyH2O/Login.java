@@ -22,6 +22,8 @@ public class Login {
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
 
+                // Git test
+
                 // TODO: Login user using User manager.
                 Main.jFrameManager.createDialogBox("Login is not implemented yet. Here is a dashboard.");
                 Main.jFrameManager.setContentPane(JFrameManager.Frames.dashboard);
