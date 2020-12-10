@@ -1,123 +1,44 @@
 package nl.wouterdebruijn.EasyH2O;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class is bound to the JFrame.
  */
 public class Dashboard {
 
-    private JPanel Dashboard;
-    private JLabel applicationTitle;
-    private JPanel contentPanel;
-    private JTextField formHostname;
-    private JTextField formUsername;
-    private JTextField formDatabase;
-    private JPasswordField formPassword;
-    private JLabel formHostnameLabel;
-    private JLabel formUsernameLabel;
-    private JLabel formDatabaseLabel;
-    private JLabel formPasswordLabel;
-    private JButton getLatestValueButton;
-    private JTextPane outputTextPlane;
-    private JLabel mySQLStatusLabel;
-    private JLabel mySQLStatusField;
-    private JButton formConfirm;
-    private JButton randomTextButton;
-    private JLabel outputLabel;
-
-    static public JFrame jFrame;
+    public JPanel dashboard;
+    private JPanel header;
+    private JPanel modules;
+    private JPanel progressModule;
+    private JPanel historyModule;
+    private JPanel weatherModule;
+    private JPanel weatherFutureModule;
+    private JLabel progressLabel;
+    private JLabel weatherLabel;
+    private JLabel historyLabel;
+    private JLabel weatherFutureLabel;
+    private JPanel headerUser;
+    private JPanel headerBar;
+    private JLabel usernameLabel;
+    private JProgressBar progressBar;
 
     public Dashboard() {
-
-        formConfirm.addActionListener(new ActionListener() {
-            /**
-             * "SQL Connect" button logic
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    Main.mySQLConnector.disconnect();
-                    Main.mySQLConnector.connect(formHostname.getText(), formUsername.getText(), formDatabase.getText(), String.valueOf(formPassword.getPassword()));
-
-                    setMySQlStatus(Main.mySQLConnector.con.isClosed());
-
-                } catch (SQLException throwable) {
-                    throwable.printStackTrace();
-                }
-            }
-        });
-
-        getLatestValueButton.addActionListener(new ActionListener() {
-            /**
-             * Refresh data button on dashboard function triggers when clicked
-             *
-             * @param e Event prop (not used)
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    Main.serialConnector.Send(); // Send getFloat command to Microbit
-
-                    TimeUnit.SECONDS.sleep(1); // Wait for microbit
-
-                    ResultSet resultSet = Main.mySQLConnector.query("SELECT * FROM datapoint ORDER BY id DESC LIMIT 10");
-
-                    // TODO: Change to table in later version
-
-                    StringBuilder text = new StringBuilder();
-
-                    while (resultSet.next()) {
-                        text.append(resultSet.getString("timestamp"));
-                        text.append(": ");
-                        text.append(resultSet.getString("data"));
-                        text.append("\n");
-                    }
-
-                    outputTextPlane.setText(text.toString());
-
-                } catch (SQLException | InterruptedException throwables) {
-                    throwables.printStackTrace();
-                }
-            }
-        });
+        setUsername();
+        updateProgress(60);
     }
 
     /**
-     * Set the status label to corresponding text and color.
-     * @param isDisconnected this could be false when the sql connection is active. Normally filled with con.isClosed()
+     * Update progress bar value. (Amound of water in the rain barrel.
+     *
+     * @param percentage Percentage of water in rain barrel. Should be 0 - 100
      */
-    public void setMySQlStatus(boolean isDisconnected) {
-        if (!isDisconnected) {
-            mySQLStatusField.setText("Connected");
-            mySQLStatusField.setForeground(Color.green);
-        } else {
-            mySQLStatusField.setText("Disconnected");
-            mySQLStatusField.setForeground(Color.red);
-        }
+    public void updateProgress(int percentage) {
+        progressBar.setValue(percentage);
     }
 
-    /**
-     * Creates the jFrame object, also sets the default parameters.
-     */
-    public void createAndShow() {
-        jFrame = new JFrame("Dashboard App");
-        jFrame.setContentPane(new Dashboard().Dashboard);
-        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jFrame.pack();
-        jFrame.setVisible(true);
-    }
-    
-    /**
-     * Redraws the JFrame to be sized to components.
-     */
-    public static void updateSize() {
-        if (jFrame != null) jFrame.pack();
+    private void setUsername() {
+        // TODO: Get username from User manager.
+        usernameLabel.setText("An Username A Lastname");
     }
 }
