@@ -14,7 +14,7 @@ public class User
   public User(String username, String password)
   {
 	this.username = username;
-	this.hashedPassword = BCrypt.hashpw (password, BCrypt.gensalt ());
+	this.hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
   }
 
   /**
@@ -24,12 +24,6 @@ public class User
    */
   public boolean validatePassword(String password)
   {
-	if (password == BCrypt.hashpw (password, hashedPassword))
-	{
-	  return true;
-	} else
-	{
-	  return false;
-	}
+	return BCrypt.checkpw (password, hashedPassword);
   }
 }
