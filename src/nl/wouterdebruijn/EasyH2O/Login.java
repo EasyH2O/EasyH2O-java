@@ -11,6 +11,7 @@ public class Login {
     private JPasswordField passwordField;
     private JLabel passwordLabel;
     private JButton loginButton;
+    private JTextField emailField;
 
     public Login() {
         loginButton.addActionListener(new ActionListener() {
