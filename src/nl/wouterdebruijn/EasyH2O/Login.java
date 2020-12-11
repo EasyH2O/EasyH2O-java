@@ -2,7 +2,7 @@ package nl.wouterdebruijn.EasyH2O;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.ActionListener
 
 public class Login {
     public JPanel login;
@@ -24,7 +24,8 @@ public class Login {
 
                 // Git test
 
-                // TODO: Login user using User manager.
+
+
                 Main.jFrameManager.createDialogBox("Login is not implemented yet. Here is a dashboard.");
                 Main.jFrameManager.setContentPanel(JFrameManager.Frames.dashboard);
             }
