@@ -1,13 +1,17 @@
 package nl.wouterdebruijn.EasyH2O;
 
+import nl.wouterdebruijn.EasyH2O.entities.User;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Login {
     public JPanel login;
-    private JTextField usernameField;
-    private JLabel usernameLabel;
+    private JLabel emailLabel;
     private JPasswordField passwordField;
     private JLabel passwordLabel;
     private JButton loginButton;
@@ -20,15 +24,38 @@ public class Login {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
-                String password = new String(passwordField.getPassword());
+                String inputEmail = emailField.getText();
+                String inputPassword = new String(passwordField.getPassword());
 
-                // Git test
+                try {
+                    /*
+                     * Select matching user from database searches with email.
+                     */
+                    PreparedStatement preparedStatement = Main.mySQLConnector.con.prepareStatement("SELECT * FROM user where email = (?);");
+                    preparedStatement.setString(1, inputEmail);
+                    ResultSet resultSet = preparedStatement.executeQuery();
 
+                    if (resultSet.next()) {
+                        int id = resultSet.getInt("id");
+                        String name = resultSet.getString("naam");
+                        String hash = resultSet.getString("passwordHash");
+                        String email = resultSet.getString("email");
 
+                        User tmpUser = new User(id, email, hash, name);
 
-                Main.jFrameManager.createDialogBox("Login is not implemented yet. Here is a dashboard.");
-                Main.jFrameManager.setContentPanel(JFrameManager.Frames.dashboard);
+                        if (tmpUser.validatePassword(inputPassword)) {
+                            // Password correct!
+                            Main.jFrameManager.setContentPanel(JFrameManager.Frames.dashboard);
+                        } else {
+                            Main.jFrameManager.createDialogBox("Incorrect username or password.");
+                        }
+                    } else {
+                        Main.jFrameManager.createDialogBox("Incorrect username or password.");
+                    }
+                } catch (SQLException throwable) {
+                    throwable.printStackTrace();
+                    Main.jFrameManager.createDialogBox("SQL error, check console.");
+                }
             }
         });
     }
