@@ -34,11 +34,24 @@ public class MySQLConnector {
     /**
      * Create, execute and return query
      *
-     * @return Resultset
+     * @return ResultSet
      * @throws SQLException Throws error if function fails
      */
     public ResultSet query(String query) throws SQLException {
         Statement stmt = this.con.createStatement(); //create java statement
         return stmt.executeQuery(query);
+    }
+
+    /**
+     * Insert microbit data into db
+     *
+     * @param microbitData Data received from microbit
+     * @throws SQLException Throws error if function fails
+     * @Author Luca
+     */
+    public void sendMicroBitData(String microbitData) throws SQLException {
+        PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO `datapoint`(`regenton`, `data`) VALUES (1, ?)");
+        preparedStatement.setString(1, microbitData);
+        preparedStatement.executeUpdate();
     }
 }

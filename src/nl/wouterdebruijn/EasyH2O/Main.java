@@ -1,14 +1,12 @@
 package nl.wouterdebruijn.EasyH2O;
 
 import javax.swing.*;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 public class Main {
 
     public static MySQLConnector mySQLConnector;
+    public static SerialConnector serialConnector;
+    public static JFrameManager jFrameManager;
 
     /**
      * Main function, creates the Dashboard instance and draws the JFrame.
@@ -18,71 +16,28 @@ public class Main {
 
         setUISystemDefault();
 
-        Dashboard dashboard = new Dashboard();
-        dashboard.createAndShow();
+        jFrameManager = new JFrameManager("EasyH2O Alpha 0.0.1");
+        jFrameManager.setDefaultPanel(JFrameManager.Frames.preLaunch);
+        jFrameManager.visible(true);
 
         /*
          * Init MySQL Class.
          */
         mySQLConnector = new MySQLConnector();
+        serialConnector = new SerialConnector();
 
-        /*
-         * TEST (Returns error when params aren't filled.)
-         * Call the connect function
-         */
-        try {
-            mySQLConnector.connect("localhost", "root", "easy_h2o", "");
-
-            // Test code for Connection, Returns false when connection is working.
-            System.out.println("Are we closed? : " + mySQLConnector.con.isClosed());
-
-            printdatabase();
-            sendMicroBitData("RF,1,1,1,1,1;");
-
-            mySQLConnector.disconnect();
-
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
+        serialConnector.OpenPort();
     }
 
+    /**
+     * Set dashboard theme to system default (Looks nicer!)
+     *
+     * @Author Wouter
+     */
     public static void setUISystemDefault() {
         // Set JFrame look and feel to Windows instead of Java.
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
-    }
-
-    public static void printdatabase () {
-        try {
-            Statement statement = mySQLConnector.con.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM user;");
-
-            while (resultSet.next()) {
-                String naam = resultSet.getString("naam");
-                String email = resultSet.getString("email");
-                String klantnummer = resultSet.getString("id");
-
-                System.out.println("Klantnummer: " + klantnummer);
-                System.out.println("Naam: " + naam);
-                System.out.println("E-mail: " + email);
-                System.out.println();
-            }
-
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
-    }
-
-    public static void sendMicroBitData(String microbitData) {
-        try {
-
-            PreparedStatement preparedStatement = mySQLConnector.con.prepareStatement("INSERT INTO `datapoint`(`regenton`, `data`) VALUES (1, ?)");
-            preparedStatement.setString(1, microbitData);
-            preparedStatement.executeUpdate();
 
         } catch (Throwable throwable) {
             throwable.printStackTrace();
