@@ -8,14 +8,16 @@ import org.mindrot.jbcrypt.BCrypt;
  * @author Emma
  */
 public class User {
-    public String id;
-    public String naam;
-    public String email;
+    public final int id;
+    public final String name;
+    public final String email;
     private final String hashedPassword;
 
-    public User(String email, String hashedPassword) {
+    public User(int id, String email, String hashedPassword, String name) {
+        this.id = id;
         this.email = email;
         this.hashedPassword = hashedPassword;
+        this.name = name;
     }
 
     /**
@@ -29,13 +31,14 @@ public class User {
 
     /**
      * Create a brand new User (encrypt password)
-     *
-     * @param email     Email of user.
-     * @param plainText Plain text password.
-     * @return A user instance.
+     * @param id User Id
+     * @param email User email
+     * @param plainText Plaintext password
+     * @param name User full name
+     * @return User instance.
      */
-    public static User newUser(String email, String plainText) {
-        return new User(email, BCrypt.hashpw(plainText, BCrypt.gensalt()));
+    public static User newUser(int id, String email, String plainText, String name) {
+        return new User(id, email, BCrypt.hashpw(plainText, BCrypt.gensalt()), name);
     }
 
 }
