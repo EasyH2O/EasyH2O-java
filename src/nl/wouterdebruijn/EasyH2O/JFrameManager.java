@@ -16,6 +16,11 @@ public class JFrameManager {
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /**
+     * Shows or hides this Window depending on the value of parameter visible.
+     *
+     * @param visible true makes window visible.
+     */
     public void visible(Boolean visible) {
         jFrame.setVisible(visible);
     }
@@ -36,7 +41,7 @@ public class JFrameManager {
      * @param jPanel The panel that will be switched to.
      */
     public void setDefaultPanel(JPanel jPanel) {
-        setContentPane(jPanel);
+        setContentPanel(jPanel);
         rePack();
         jFrame.setVisible(true);
     }
@@ -58,7 +63,7 @@ public class JFrameManager {
     }
 
     /**
-     * Create an dialog box. Usefull for displaying Errors or other messages.
+     * Create an dialog box. Useful for displaying Errors or other messages.
      *
      * @param errorText Text that is shown in the dialog.
      */

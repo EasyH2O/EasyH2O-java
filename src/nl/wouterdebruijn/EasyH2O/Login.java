@@ -26,7 +26,7 @@ public class Login {
 
                 // TODO: Login user using User manager.
                 Main.jFrameManager.createDialogBox("Login is not implemented yet. Here is a dashboard.");
-                Main.jFrameManager.setContentPane(JFrameManager.Frames.dashboard);
+                Main.jFrameManager.setContentPanel(JFrameManager.Frames.dashboard);
             }
         });
     }
