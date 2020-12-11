@@ -26,4 +26,15 @@ public class User
   {
 	return BCrypt.checkpw (password, hashedPassword);
   }
+
+    /**
+     * Create a brand new User (encrypt password)
+     * @param username Username
+     * @param plainText Plain text password.
+     * @return A user instance.
+     */
+    public static User newUser(String username, String plainText) {
+        return new User(username, BCrypt.hashpw(plainText, BCrypt.gensalt()));
+    }
+
 }
