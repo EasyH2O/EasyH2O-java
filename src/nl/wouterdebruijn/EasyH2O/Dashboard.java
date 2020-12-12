@@ -1,5 +1,7 @@
 package nl.wouterdebruijn.EasyH2O;
 
+import nl.wouterdebruijn.EasyH2O.entities.User;
+
 import javax.swing.*;
 
 /**
@@ -11,9 +13,9 @@ public class Dashboard {
     private JPanel header;
     private JPanel modules;
     private JPanel progressModule;
-    private JPanel historyModule;
     private JPanel weatherModule;
     private JPanel weatherFutureModule;
+    private JPanel historyModule;
     private JLabel progressLabel;
     private JLabel weatherLabel;
     private JLabel historyLabel;
@@ -23,7 +25,13 @@ public class Dashboard {
     private JLabel usernameLabel;
     private JProgressBar progressBar;
 
+    private User currentUser;
+
     public Dashboard() {
+    }
+
+    public void initUser(User user) {
+        this.currentUser = user;
         setUsername();
         updateProgress(60);
     }
@@ -38,7 +46,6 @@ public class Dashboard {
     }
 
     private void setUsername() {
-        // TODO: Get username from User manager.
-        usernameLabel.setText("An Username A Lastname");
+        usernameLabel.setText(currentUser.name);
     }
 }

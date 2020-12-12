@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="nl.wouterdebruijn.EasyH2O.Login">
-  <grid id="27dc6" binding="login" layout-manager="GridLayoutManager" row-count="5" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="login" layout-manager="GridLayoutManager" row-count="6" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
       <xy x="20" y="20" width="500" height="400"/>
@@ -8,15 +8,15 @@
     <properties/>
     <border type="none"/>
     <children>
-      <component id="a2335" class="javax.swing.JLabel" binding="usernameLabel">
+      <component id="a2335" class="javax.swing.JLabel" binding="emailLabel">
         <constraints>
           <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Username"/>
+          <text value="Email"/>
         </properties>
       </component>
-      <component id="d9dfe" class="javax.swing.JTextField" binding="usernameField">
+      <component id="d9dfe" class="javax.swing.JTextField" binding="emailField">
         <constraints>
           <grid row="1" column="2" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
@@ -39,17 +39,17 @@
       </vspacer>
       <vspacer id="700ff">
         <constraints>
-          <grid row="4" column="1" row-span="1" col-span="4" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+          <grid row="5" column="1" row-span="1" col-span="4" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
         </constraints>
       </vspacer>
       <hspacer id="78264">
         <constraints>
-          <grid row="0" column="5" row-span="5" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="5" row-span="6" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
       </hspacer>
       <hspacer id="dbc75">
         <constraints>
-          <grid row="0" column="0" row-span="5" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="6" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
       </hspacer>
       <component id="4ac26" class="javax.swing.JButton" binding="loginButton">
@@ -72,6 +72,14 @@
           </grid>
         </constraints>
         <properties/>
+      </component>
+      <component id="136d7" class="javax.swing.JButton" binding="registerButton">
+        <constraints>
+          <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Register?"/>
+        </properties>
       </component>
     </children>
   </grid>
