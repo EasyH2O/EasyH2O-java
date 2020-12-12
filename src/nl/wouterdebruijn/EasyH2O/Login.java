@@ -16,6 +16,7 @@ public class Login {
     private JLabel passwordLabel;
     private JButton loginButton;
     private JTextField emailField;
+    private JButton registerButton;
 
     public Login() {
         loginButton.addActionListener(new ActionListener() {
@@ -46,6 +47,7 @@ public class Login {
                         if (tmpUser.validatePassword(inputPassword)) {
                             // Password correct!
                             Main.jFrameManager.setContentPanel(JFrameManager.Frames.dashboard);
+                            Main.jFrameManager.dashboardInstance.initUser(tmpUser); // Set current user to the logged in user. Used for dashboard user variables.
                         } else {
                             Main.jFrameManager.createDialogBox("Incorrect username or password.");
                         }
@@ -58,5 +60,9 @@ public class Login {
                 }
             }
         });
+        /*
+         * Register button event changes page to register page.
+         */
+        registerButton.addActionListener(e -> Main.jFrameManager.setContentPanel(JFrameManager.Frames.register));
     }
 }
