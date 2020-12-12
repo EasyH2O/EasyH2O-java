@@ -11,9 +11,9 @@ public class Dashboard {
     private JPanel header;
     private JPanel modules;
     private JPanel progressModule;
-    private JPanel historyModule;
     private JPanel weatherModule;
     private JPanel weatherFutureModule;
+    private JPanel historyModule;
     private JLabel progressLabel;
     private JLabel weatherLabel;
     private JLabel historyLabel;
@@ -27,6 +27,7 @@ public class Dashboard {
         setUsername();
         updateProgress(60);
     }
+
 
     /**
      * Update progress bar value. (Amound of water in the rain barrel.
