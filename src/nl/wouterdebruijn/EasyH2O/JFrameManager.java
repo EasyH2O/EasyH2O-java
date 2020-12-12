@@ -6,6 +6,8 @@ public class JFrameManager {
 
     public JFrame jFrame;
 
+    public final Dashboard dashboardInstance = new Dashboard();
+
     /**
      * JFrameManager instance, used for managing Jframe panels, has helper function for popups.
      *
@@ -50,9 +52,10 @@ public class JFrameManager {
      * Panels available for JFrame.
      */
     public static class Frames {
-        public static JPanel dashboard = new Dashboard().dashboard;
+        public static JPanel dashboard = Main.jFrameManager.dashboardInstance.dashboard;
         public static JPanel preLaunch = new PreLaunchForm().preLaunch;
         public static JPanel login = new Login().login;
+        public static JPanel register = new Register().register;
     }
 
     /**
