@@ -32,7 +32,7 @@ public class Main {
     /**
      * Set dashboard theme to system default (Looks nicer!)
      *
-     * @Author Wouter
+     * @Author Wouter de Bruijn github@electrogamez.nl
      */
     public static void setUISystemDefault() {
         // Set JFrame look and feel to Windows instead of Java.

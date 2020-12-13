@@ -25,6 +25,7 @@ public class PreLaunchForm {
         connectButton.addActionListener(new ActionListener() {
             /**
              * On MySQL Connect button
+             * @Author Wouter de Bruijn github@electrogamez.nl
              */
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -40,6 +41,7 @@ public class PreLaunchForm {
         startDashboardButton.addActionListener(new ActionListener() {
             /**
              * On Start Dashboard button
+             * @Author Wouter de Bruijn github@electrogamez.nl
              */
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -56,6 +58,9 @@ public class PreLaunchForm {
         });
     }
 
+    /**
+     * Update the status text in the upper right corner of the dashboard.
+     */
     private void updateMySQLStatus() {
         try {
             if (Main.mySQLConnector.con.isClosed()) {
