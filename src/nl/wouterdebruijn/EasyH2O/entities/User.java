@@ -1,5 +1,6 @@
 package nl.wouterdebruijn.EasyH2O.entities;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import nl.wouterdebruijn.EasyH2O.Main;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -18,14 +19,14 @@ public class User
     public final int id;
     public final String name;
     public final String email;
-    private final String password;
+    private final String hashedPassword;
 
     public User(int id, String email, String password, String name)
     {
         this.id = id;
+        this.name = name;
         this.email = email;
         this.hashedPassword = BCrypt.hashpw (password, BCrypt.gensalt ());
-        this.name = name;
     }
 
     /**
