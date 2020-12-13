@@ -10,17 +10,21 @@ import java.sql.SQLException;
  * User class
  *
  * @author Emma
+ * Note: TOEVOEGEN aan m'n code is prima, het VERANDEREN hiervan NIET tyvm.
+ * En als m'n code opmaak je niet bevalt sorry maar zo codeer ik.
  */
-public class User {
+public class User
+{
     public final int id;
     public final String name;
     public final String email;
-    private final String hashedPassword;
+    private final String password;
 
-    public User(int id, String email, String hashedPassword, String name) {
+    public User(int id, String email, String password, String name)
+    {
         this.id = id;
         this.email = email;
-        this.hashedPassword = hashedPassword;
+        this.hashedPassword = BCrypt.hashpw (password, BCrypt.gensalt ());
         this.name = name;
     }
 
@@ -29,7 +33,8 @@ public class User {
      * @return true if password matches hashedPassword else return false
      * @author Emma
      */
-    public boolean validatePassword(String password) {
+    public boolean validatePassword(String password)
+    {
         return BCrypt.checkpw(password, hashedPassword);
     }
 
