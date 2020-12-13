@@ -11,17 +11,19 @@ import java.sql.SQLException;
  *
  * @author Emma
  */
-public class User {
+public class User
+{
     public final int id;
     public final String name;
     public final String email;
-    private final String hashedPassword;
+    private String hashedPassword;
 
-    public User(int id, String email, String hashedPassword, String name) {
+    public User(int id, String email, String password, String name)
+    {
         this.id = id;
-        this.email = email;
-        this.hashedPassword = hashedPassword;
         this.name = name;
+        this.email = email;
+        this.hashedPassword = BCrypt.hashpw (password, BCrypt.gensalt ());
     }
 
     /**
@@ -29,7 +31,8 @@ public class User {
      * @return true if password matches hashedPassword else return false
      * @author Emma
      */
-    public boolean validatePassword(String password) {
+    public boolean validatePassword(String password)
+    {
         return BCrypt.checkpw(password, hashedPassword);
     }
 
@@ -51,12 +54,14 @@ public class User {
      * Create a brand new User (encrypt password)
      * @param id User Id
      * @param email User email
-     * @param plainText Plaintext password
+     * @param hashedPassword Password hash of user.
      * @param name User full name
      * @return User instance.
      */
-    public static User newUser(int id, String email, String plainText, String name) {
-        return new User(id, email, BCrypt.hashpw(plainText, BCrypt.gensalt(16)), name);
+    public static User fromHash(int id, String email, String hashedPassword, String name) {
+        User user = new User(id, email, "tmp", name);
+        user.hashedPassword = hashedPassword;
+        return user;
     }
 
 }
