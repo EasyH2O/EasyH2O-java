@@ -49,11 +49,10 @@ public class User {
 
     /**
      * Create a brand new User (encrypt password)
-     *
-     * @param id        User Id
-     * @param email     User email
+     * @param id User Id
+     * @param email User email
      * @param plainText Plaintext password
-     * @param name      User full name
+     * @param name User full name
      * @return User instance.
      */
     public static User newUser(int id, String email, String plainText, String name) {
