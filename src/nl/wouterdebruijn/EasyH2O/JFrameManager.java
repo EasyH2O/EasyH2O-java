@@ -12,6 +12,7 @@ public class JFrameManager {
      * JFrameManager instance, used for managing Jframe panels, has helper function for popups.
      *
      * @param windowTitle Title of the frame, example: "My cool application!"
+     * @Author Wouter de Bruijn github@electrogamez.nl
      */
     public JFrameManager(String windowTitle) {
         jFrame = new JFrame(windowTitle);
@@ -22,6 +23,7 @@ public class JFrameManager {
      * Shows or hides this Window depending on the value of parameter visible.
      *
      * @param visible true makes window visible.
+     * @Author Wouter de Bruijn github@electrogamez.nl
      */
     public void visible(Boolean visible) {
         jFrame.setVisible(visible);
@@ -31,6 +33,7 @@ public class JFrameManager {
      * Set the current content panel. Changes panel and rePacks
      *
      * @param jPanel The panel that will be switched to.
+     * @Author Wouter de Bruijn github@electrogamez.nl
      */
     public void setContentPanel(JPanel jPanel) {
         jFrame.setContentPane(jPanel);
@@ -41,6 +44,7 @@ public class JFrameManager {
      * Set the current content panel, also changes visibly to true.
      *
      * @param jPanel The panel that will be switched to.
+     * @Author Wouter de Bruijn github@electrogamez.nl
      */
     public void setDefaultPanel(JPanel jPanel) {
         setContentPanel(jPanel);
@@ -50,6 +54,7 @@ public class JFrameManager {
 
     /**
      * Panels available for JFrame.
+     * @Author Wouter de Bruijn github@electrogamez.nl
      */
     public static class Frames {
         public static JPanel dashboard = Main.jFrameManager.dashboardInstance.dashboard;
@@ -60,6 +65,7 @@ public class JFrameManager {
 
     /**
      * Changes frame size to the content.
+     * @Author Wouter de Bruijn github@electrogamez.nl
      */
     private void rePack() {
         jFrame.pack();
@@ -69,6 +75,7 @@ public class JFrameManager {
      * Create an dialog box. Useful for displaying Errors or other messages.
      *
      * @param errorText Text that is shown in the dialog.
+     * @Author Wouter de Bruijn github@electrogamez.nl
      */
     public void createDialogBox(String errorText) {
         JOptionPane.showMessageDialog(jFrame, errorText);

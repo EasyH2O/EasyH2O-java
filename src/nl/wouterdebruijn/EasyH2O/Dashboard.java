@@ -30,6 +30,14 @@ public class Dashboard {
     public Dashboard() {
     }
 
+    /**
+     * Init the dashboard to work for the user.
+     * Sets the username and other user variables.
+     *
+     * TODO: Implement Regenton.java
+     * @param user
+     * @Author Wouter de Bruijn github@electrogamez.nl
+     */
     public void initUser(User user) {
         this.currentUser = user;
         setUsername();
@@ -40,6 +48,7 @@ public class Dashboard {
      * Update progress bar value. (Amount of water in the rain barrel.
      *
      * @param percentage Percentage of water in rain barrel. Should be 0 - 100
+     * @Author Wouter de Bruijn github@electrogamez.nl
      */
     public void updateProgress(int percentage) {
         progressBar.setValue(percentage);

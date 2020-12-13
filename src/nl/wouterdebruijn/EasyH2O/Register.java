@@ -4,8 +4,6 @@ import nl.wouterdebruijn.EasyH2O.entities.InputException;
 import nl.wouterdebruijn.EasyH2O.entities.User;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 
@@ -19,7 +17,12 @@ public class Register {
     private JLabel fullnameLabel;
     private JLabel emailLabel;
 
+    /**
+     * @Author Wouter de Bruijn github@electrogamez.nl
+     */
     public Register() {
+
+        // Register button
         registerButton.addActionListener(e -> {
             try {
                 if (emailField.getText().isBlank()) throw new InputException("Email field can not be blank!");
