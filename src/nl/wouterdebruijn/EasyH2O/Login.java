@@ -42,7 +42,7 @@ public class Login {
                         String hash = resultSet.getString("passwordHash");
                         String email = resultSet.getString("email");
 
-                        User tmpUser = new User(id, email, hash, name);
+                        User tmpUser = User.fromHash(id, email, hash, name);
 
                         if (tmpUser.validatePassword(inputPassword)) {
                             // Password correct!
