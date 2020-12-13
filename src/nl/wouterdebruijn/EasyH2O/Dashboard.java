@@ -37,7 +37,7 @@ public class Dashboard {
     }
 
     /**
-     * Update progress bar value. (Amound of water in the rain barrel.
+     * Update progress bar value. (Amount of water in the rain barrel.
      *
      * @param percentage Percentage of water in rain barrel. Should be 0 - 100
      */
