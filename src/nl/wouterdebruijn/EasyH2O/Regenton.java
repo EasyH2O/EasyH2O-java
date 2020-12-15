@@ -153,6 +153,7 @@ public class Regenton {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
+        return 0;
     }
 
     /**
@@ -163,15 +164,28 @@ public class Regenton {
 
     public void SwitchPump() {
         try {
-            String CMD = "SP;";
-            byte[] msg = CMD.getBytes();
-            serialPort.writeBytes(msg, CMD.length());
+            String cmd = "SP;";
+            byte[] MSG = cmd.getBytes();
+            serialPort.writeBytes(MSG, cmd.length());
         } catch (Exception ex) {
             System.out.println("Fout bij het schakelen van de pomp: " + ex);
         }
+        Scanner response = new Scanner(serialPort.getInputStream()).useDelimiter("\n");
+        String Data = response.next();
+        System.out.println( Data);
+
     }
 
     public void PumpState() {
-
+        try {
+            String pl = "PS;";
+            byte[] HSS = pl.getBytes();
+            serialPort.writeBytes(HSS, pl.length());
+        } catch (Exception ex) {
+            System.out.println("Fout bij het ophalen van status van de pomp: " + ex);
+        }
+        Scanner response = new Scanner(serialPort.getInputStream()).useDelimiter("\n");
+        String Status = response.next();
+        System.out.println( Status);
     }
 }
