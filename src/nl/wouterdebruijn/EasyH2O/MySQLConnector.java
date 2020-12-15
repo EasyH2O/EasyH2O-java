@@ -3,7 +3,7 @@ package nl.wouterdebruijn.EasyH2O;
 import java.sql.*;
 
 public class MySQLConnector {
-    public Connection con;
+    public static Connection con;
 
     /**
      * Connect to MySQL Database
