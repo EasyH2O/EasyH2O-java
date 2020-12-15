@@ -139,7 +139,7 @@ public class Regenton {
 
     public int GetOldData(int regenton) {
         try {
-            Statement statement = MySQLConnector.con.createStatement();
+            Statement statement = Main.mySQLConnector.con.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM `datapoint` WHERE `regenton` = " + regenton + ";");
 
             for (int teller = 0; teller < 5 && resultSet.next(); teller++) {
