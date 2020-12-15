@@ -137,10 +137,10 @@ public class Regenton {
      * made by Luca
      */
 
-    public int GetOldData() {
+    public int GetOldData(int regenton) {
         try {
             Statement statement = MySQLConnector.con.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM `datapoint` WHERE `regenton` = 1;");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM `datapoint` WHERE `regenton` = " + regenton + ";");
 
             for (int teller = 0; teller < 5 && resultSet.next(); teller++) {
                 String data = resultSet.getString("data");
@@ -178,9 +178,9 @@ public class Regenton {
 
     public void PumpState() {
         try {
-            String pl = "PS;";
-            byte[] HSS = pl.getBytes();
-            serialPort.writeBytes(HSS, pl.length());
+            String cmd = "PS;";
+            byte[] MSG = cmd.getBytes();
+            serialPort.writeBytes(MSG, cmd.length());
         } catch (Exception ex) {
             System.out.println("Fout bij het ophalen van status van de pomp: " + ex);
         }
