@@ -1,10 +1,14 @@
 package nl.wouterdebruijn.EasyH2O.entities;
 
 import nl.wouterdebruijn.EasyH2O.Main;
+import nl.wouterdebruijn.EasyH2O.Regenton;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User class
@@ -48,6 +52,30 @@ public class User
         preparedStatement.setString(2, this.hashedPassword);
         preparedStatement.setString(3, this.email);
         return preparedStatement.executeUpdate();
+    }
+
+    /**
+     * Gets regentonnen from database associated with this user.
+     * @return List of Regenton objects.
+     * @throws SQLException on mySQL error.
+     * @Author Riham - 19075057@student.hhs.nl
+     */
+    public List<Regenton> getRegentonnen() throws SQLException {
+        PreparedStatement preparedStatement = Main.mySQLConnector.con.prepareStatement("SELECT * from regenton WHERE owner = ?");
+        preparedStatement.setInt(1, this.id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        List<Regenton> resultList = new ArrayList<Regenton>();
+
+        while (resultSet.next()) {
+            int id = resultSet.getInt("id");
+            String comPort = resultSet.getString("comPort");
+
+            Regenton tempRegenton = new Regenton(id, comPort, this);
+            resultList.add(tempRegenton);
+        }
+
+        return resultList;
     }
 
     /**

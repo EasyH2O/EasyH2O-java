@@ -3,6 +3,7 @@ package nl.wouterdebruijn.EasyH2O;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
+import nl.wouterdebruijn.EasyH2O.entities.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,13 +14,15 @@ import static com.fazecast.jSerialComm.SerialPort.*;
 public class Regenton {
     public final int id;
     public final String commPort;
+    public final User owner;
     public static SerialPort serialPort;
 
     private final byte[] buffer = new byte[1024];
 
-    public Regenton(int id, String commPort) {
+    public Regenton(int id, String commPort, User owner) {
         this.id = id;
         this.commPort = commPort;
+        this.owner = owner;
     }
 
     public void openPort() {
