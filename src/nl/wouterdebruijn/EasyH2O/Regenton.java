@@ -4,10 +4,8 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
 import nl.wouterdebruijn.EasyH2O.entities.User;
-
-import java.sql.ResultSet;
+import java.sql.*;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import static com.fazecast.jSerialComm.SerialPort.*;
 
@@ -19,6 +17,7 @@ public class Regenton {
     public boolean pumpEnabled = false;
 
     private final byte[] buffer = new byte[1024];
+    private String query;
 
     public Regenton(int id, String comPort, User owner) {
         this.id = id;
@@ -172,15 +171,24 @@ public class Regenton {
     public void getOldData(int regenton) throws SQLException {
 
         try {
-            Statement statement = Main.mySQLConnector.con.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM `datapoint` WHERE `regenton` = " + regenton + ";");
-            String data = resultSet.getString("data");
-            String tijd = resultSet.getString("timestamp");
-            System.out.println("Data: " + data);
-            System.out.println("Tijd: " + tijd);
+            String myDriver = "org.gjt.mm.mysql.Driver";
+            String myUrl = "jdbc:mysql://localhost/test";
+            Class.forName(myDriver);
+            Connection conn = DriverManager.getConnection(myUrl, "root", "0000L");
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String Name = rs.getString("first_name");
+                Date dateCreated = rs.getDate("date_created");
+                System.out.format("%s, %s, %s\n", id, Name, dateCreated);
+
+            }
+            st.close();
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.err.println("Got an exception! ");
+            System.err.println(ex.getMessage());
         }
 
     }
