@@ -115,10 +115,19 @@ public class Regenton {
          */
         @Override
         public void serialEvent(SerialPortEvent event) {
-
             byte[] delimitedMessage = event.getReceivedData();
-            System.out.println("Received the following delimited message: " + new String(delimitedMessage));
+            String message = new String(delimitedMessage);
+            if(message.equals("Switched to 0")|| message.equals("Switched to 1")) {
 
+                System.out.println("Received the following delimited message: " + message);
+            }
+            else if(message.equals("0")|| message.equals("1")) {
+
+                System.out.println("Received the following delimited message: " + message);
+            }
+            else {
+                System.out.println("Received the following delimited message: " + message);
+            }
             try {
                 if (!Main.mySQLConnector.con.isClosed())
                     Main.mySQLConnector.sendMicroBitData(new String(delimitedMessage));
@@ -147,7 +156,7 @@ public class Regenton {
      * made by Luca
      */
 
-    public int getOldData(int regenton) {
+    public void getOldData(int regenton) {
         try {
             Statement statement = Main.mySQLConnector.con.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM `datapoint` WHERE `regenton` = " + regenton + ";");
@@ -163,7 +172,7 @@ public class Regenton {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
-        return 0;
+
     }
 
     /**
