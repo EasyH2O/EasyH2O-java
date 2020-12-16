@@ -13,15 +13,16 @@ import static com.fazecast.jSerialComm.SerialPort.*;
 
 public class Regenton {
     public final int id;
-    public final String commPort;
+    public final String comPort;
     public final User owner;
-    public static SerialPort serialPort;
+    private SerialPort serialPort;
+    public boolean pumpEnabled = false;
 
     private final byte[] buffer = new byte[1024];
 
-    public Regenton(int id, String commPort, User owner) {
+    public Regenton(int id, String comPort, User owner) {
         this.id = id;
-        this.commPort = commPort;
+        this.comPort = comPort;
         this.owner = owner;
     }
 
@@ -38,7 +39,7 @@ public class Regenton {
         }
         // boven opgegeven poort wordt aan serialPort toegekend
         // kijkt of de poort kan worden geopend
-        serialPort = SerialPort.getCommPort(commPort);
+        serialPort = SerialPort.getCommPort(comPort);
         if (serialPort.openPort()) {
             serialPort.setComPortParameters(9600, 8, ONE_STOP_BIT, NO_PARITY);
             serialPort.setFlowControl(FLOW_CONTROL_DISABLED);
@@ -183,13 +184,4 @@ public class Regenton {
         }
 
     }
-
-    /**
-     * Close the connection to MySQL Database
-     *
-     * made by Luca
-     */
-
-
-
 }
