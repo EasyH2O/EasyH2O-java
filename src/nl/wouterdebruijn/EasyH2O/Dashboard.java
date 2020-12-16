@@ -5,6 +5,7 @@ import nl.wouterdebruijn.EasyH2O.entities.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class Dashboard extends JFrame {
     private JLabel usernameLabel;
     private JProgressBar progressBar;
     private JButton button1;
+    private JTextArea textArea1;
 
     private User currentUser;
     private Regenton[] regentonnen;
@@ -49,6 +51,42 @@ public class Dashboard extends JFrame {
         this.currentUser = user;
         setUsername();
         updateRegentonnen();
+
+        updateCycle();
+    }
+
+    public void updateCycle() {
+        StringBuilder resultTextArea = new StringBuilder();
+
+        for (Regenton regenton : regentonnen) {
+            try {
+                // TODO: Use function from Regenton class, ex: regenton.getData() returns String
+                ResultSet resultSet = Main.mySQLConnector.query("SELECT data FROM datapoint WHERE regenton = " + regenton.id + " ORDER BY id DESC LIMIT 3;");
+                while (resultSet.next()) {
+
+                    String[] valueArray = resultSet.getString("data").split(",");
+
+                    int resultProcents = 0;
+
+                    for (int i = 1; i < valueArray.length; i++) {
+                        if (valueArray[i].equals("0")) {
+                            resultProcents += 20;
+                        }
+                    }
+
+                    resultTextArea.append(regenton.id).append(": ").append(resultProcents);
+                    resultTextArea.append("\n");
+
+
+                }
+
+            } catch (SQLException throwables) {
+                Main.jFrameManager.createDialogBox("Error while refreshing dashboard.");
+                throwables.printStackTrace();
+            }
+        }
+
+        textArea1.setText(resultTextArea.toString());
     }
 
     /**
