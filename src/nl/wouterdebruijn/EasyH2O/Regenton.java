@@ -3,11 +3,11 @@ package nl.wouterdebruijn.EasyH2O;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
-import com.mysql.cj.xdevapi.PreparableStatement;
 import nl.wouterdebruijn.EasyH2O.entities.User;
 
-import java.net.DatagramPacket;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import static com.fazecast.jSerialComm.SerialPort.*;
 
@@ -170,15 +170,14 @@ public class Regenton {
      */
 
     public void getOldData(int regenton) throws SQLException {
-        Statement statement = Main.mySQLConnector.con.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM `datapoint` WHERE `regenton` = " + regenton + ";");
 
         try {
-
-            if (Main.mySQLConnector.)
-
-
-            }
+            Statement statement = Main.mySQLConnector.con.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM `datapoint` WHERE `regenton` = " + regenton + ";");
+            String data = resultSet.getString("data");
+            String tijd = resultSet.getString("timestamp");
+            System.out.println("Data: " + data);
+            System.out.println("Tijd: " + tijd);
 
         } catch (Exception ex) {
             ex.printStackTrace();
