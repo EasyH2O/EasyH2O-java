@@ -37,7 +37,7 @@ public class Main {
      *
      * @Author Wouter de Bruijn git@electrogamez.nl
      */
-    private static void initRegentonnen() {
+    public static void initRegentonnen() {
         try {
             ResultSet resultSet = mySQLConnector.query("SELECT * FROM regenton");
 
@@ -56,6 +56,7 @@ public class Main {
 
                     Regenton regenton = new Regenton(id, comPort, owner);
                     regentonRawList.add(regenton);
+                    System.out.println("Created and Saved regenton Instance: " + regenton.id);
                 }
 
                 Main.regentons = regentonRawList;

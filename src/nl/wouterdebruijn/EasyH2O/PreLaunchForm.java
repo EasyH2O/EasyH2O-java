@@ -48,6 +48,9 @@ public class PreLaunchForm {
                 try {
                     if (!Main.mySQLConnector.con.isClosed()) {
                         Main.jFrameManager.setContentPanel(JFrameManager.Frames.login);
+
+                        // Fill rain barrel array.
+                        Main.initRegentonnen();
                     } else {
                         throw new NullPointerException();
                     }
