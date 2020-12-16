@@ -74,6 +74,10 @@ public class Dashboard extends JFrame {
                         }
                     }
 
+                    if (resultSet.isFirst()) { // Send first item to progress bar
+                        updateProgress(resultProcents);
+                    }
+
                     resultTextArea.append(regenton.id).append(": ").append(resultProcents);
                     resultTextArea.append("\n");
 
