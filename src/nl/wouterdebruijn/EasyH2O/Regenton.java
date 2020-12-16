@@ -128,7 +128,7 @@ public class Regenton {
             /*Check for incoming values*/
             if (message.startsWith("FC")) { // Float Change, store value in DB.
                 storeFloatValues(regentonId, message);
-            } else if (message.startsWith("PC")) { // Pump Changed, store value in db, set local value
+            } else if (message.startsWith("PV")) { // Pump Value, store value in db, set local value
                 Main.regentons.get(Main.indexById(regentonId)).pumpEnabled = message.contains("1"); // Set boolean according to return string
             } else {
                 System.out.println("Other return value: " + message);
