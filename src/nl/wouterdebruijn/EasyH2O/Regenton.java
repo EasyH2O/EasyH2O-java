@@ -4,29 +4,25 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
 
-import java.sql.SQLException;
-import java.util.Scanner;
-
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import static com.fazecast.jSerialComm.SerialPort.*;
 
 public class Regenton {
     public final int id;
-    public final String commPorts;
+    public final String commPort;
     public static SerialPort serialPort;
 
     private final byte[] buffer = new byte[1024];
 
-    public Regenton(int id, String commPorts) {
+    public Regenton(int id, String commPort) {
         this.id = id;
-        this.commPorts = commPorts;
+        this.commPort = commPort;
     }
 
     public void openPort() {
-        // SerialPort sp[] = SerialPort.getCommPorts("COM5");
-
         String poortName;
         // sp is lijst van seriale poorten
         SerialPort[] sp = SerialPort.getCommPorts();
@@ -37,24 +33,9 @@ public class Regenton {
             return;
 
         }
-        else {
-            poortName= SerialPort.getCommPorts(commPorts);
-        }
-        /*if (sp.length == 1) {
-            poortName = sp[0].getSystemPortName();
-            System.out.println(poortName + " wordt nu gebruikt.");
-        } else {
-            System.out.println("Meerdere seriële poorten gedetecteerd: ");
-        }
-        // Vraagt om de juiste poort door te geven
-        System.out.println("Type poortnaam die je wilt gebruiken en druk Enter...");
-        Scanner in = new Scanner(System.in);
-        poortName = in.next();
-         */
-
         // boven opgegeven poort wordt aan serialPort toegekend
         // kijkt of de poort kan worden geopend
-        serialPort = SerialPort.getCommPort(poortName);
+        serialPort = SerialPort.getCommPort(commPort);
         if (serialPort.openPort()) {
             serialPort.setComPortParameters(9600, 8, ONE_STOP_BIT, NO_PARITY);
             serialPort.setFlowControl(FLOW_CONTROL_DISABLED);
@@ -76,7 +57,7 @@ public class Regenton {
      * made by Erhan
      */
 
-    public void GetData() {
+    public void getData() {
         try {
             String CMD = "RF;";
             byte[] msg = CMD.getBytes();
@@ -85,7 +66,7 @@ public class Regenton {
             System.out.println("Fout bij schrijven naar seriële poort: " + ex);
         }
     }
-    public void SwitchPump() {
+    public void switchPump() {
         try {
             String cmd = "SP;";
             byte[] MSG = cmd.getBytes();
@@ -95,7 +76,7 @@ public class Regenton {
         }
     }
 
-    public void PumpState() {
+    public void pumpState() {
         try {
             String cmd = "PS;";
             byte[] MSG = cmd.getBytes();
@@ -131,6 +112,7 @@ public class Regenton {
          */
         @Override
         public void serialEvent(SerialPortEvent event) {
+
             byte[] delimitedMessage = event.getReceivedData();
             System.out.println("Received the following delimited message: " + new String(delimitedMessage));
 
@@ -148,7 +130,7 @@ public class Regenton {
      * made by Erhan
      */
 
-    public void Disconnect() {
+    public void disconnect() {
         if (serialPort.closePort()) {
             System.out.println("Port is closed :)");
         } else {
@@ -162,7 +144,7 @@ public class Regenton {
      * made by Luca
      */
 
-    public int GetOldData(int regenton) {
+    public int getOldData(int regenton) {
         try {
             Statement statement = Main.mySQLConnector.con.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM `datapoint` WHERE `regenton` = " + regenton + ";");
