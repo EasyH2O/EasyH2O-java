@@ -55,6 +55,9 @@ public class Dashboard extends JFrame {
         updateCycle();
     }
 
+    /**
+     * Update dashboard content.
+     */
     public void updateCycle() {
         StringBuilder resultTextArea = new StringBuilder();
 
@@ -65,9 +68,9 @@ public class Dashboard extends JFrame {
                 while (resultSet.next()) {
 
                     String[] valueArray = resultSet.getString("data").split(",");
-
                     int resultProcents = 0;
 
+                    // Calculate progress from raw string
                     for (int i = 1; i < valueArray.length; i++) {
                         if (valueArray[i].equals("0")) {
                             resultProcents += 20;
@@ -78,10 +81,9 @@ public class Dashboard extends JFrame {
                         updateProgress(resultProcents);
                     }
 
+                    // Generate log
                     resultTextArea.append(regenton.id).append(": ").append(resultProcents);
                     resultTextArea.append("\n");
-
-
                 }
 
             } catch (SQLException throwables) {
@@ -90,6 +92,7 @@ public class Dashboard extends JFrame {
             }
         }
 
+        // Update text area.
         textArea1.setText(resultTextArea.toString());
     }
 
