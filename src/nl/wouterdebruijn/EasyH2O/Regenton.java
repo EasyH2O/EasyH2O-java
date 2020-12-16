@@ -1,22 +1,15 @@
 package nl.wouterdebruijn.EasyH2O;
-import java.sql.*;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
-import com.mysql.cj.Query;
-import com.mysql.cj.QueryResult;
-import com.mysql.cj.xdevapi.PreparableStatement;
-import com.mysql.cj.xdevapi.SelectStatement;
 import nl.wouterdebruijn.EasyH2O.entities.User;
-
-import java.net.DatagramPacket;
 import java.sql.*;
+import java.sql.SQLException;
 
 import static com.fazecast.jSerialComm.SerialPort.*;
 
 public class Regenton {
-    private static String query;
     public final int id;
     public final String comPort;
     public final User owner;
@@ -24,6 +17,7 @@ public class Regenton {
     public boolean pumpEnabled = false;
 
     private final byte[] buffer = new byte[1024];
+    private String query;
 
     public Regenton(int id, String comPort, User owner) {
         this.id = id;
@@ -174,9 +168,7 @@ public class Regenton {
      * made by Luca
      */
 
-    public static void getOldData(int regenton) throws SQLException {
-        Statement statement = Main.mySQLConnector.con.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM `datapoint` WHERE `regenton` = " + regenton + ";");
+    public void getOldData(int regenton) throws SQLException {
 
         try {
             String myDriver = "org.gjt.mm.mysql.Driver";
@@ -185,16 +177,12 @@ public class Regenton {
             Connection conn = DriverManager.getConnection(myUrl, "root", "0000L");
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(query);
-            while (rs.next())
-            {
+            while (rs.next()) {
                 int id = rs.getInt("id");
                 String Name = rs.getString("first_name");
                 Date dateCreated = rs.getDate("date_created");
-                System.out.format("%s, %s, %s\n", id, Name,dateCreated);
+                System.out.format("%s, %s, %s\n", id, Name, dateCreated);
 
-                ///boolean isAdmin = rs.getBoolean("is_admin");
-                ///int numPoints = rs.getInt("num_points");
-                /// String lastName = rs.getString("last_name");
             }
             st.close();
 
