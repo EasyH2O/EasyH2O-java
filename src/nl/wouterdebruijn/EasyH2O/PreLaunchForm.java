@@ -25,7 +25,7 @@ public class PreLaunchForm {
         connectButton.addActionListener(new ActionListener() {
             /**
              * On MySQL Connect button
-             * @Author Wouter de Bruijn github@electrogamez.nl
+             * @Author Wouter de Bruijn git@electrogamez.nl
              */
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -41,7 +41,7 @@ public class PreLaunchForm {
         startDashboardButton.addActionListener(new ActionListener() {
             /**
              * On Start Dashboard button
-             * @Author Wouter de Bruijn github@electrogamez.nl
+             * @Author Wouter de Bruijn git@electrogamez.nl
              */
             @Override
             public void actionPerformed(ActionEvent e) {

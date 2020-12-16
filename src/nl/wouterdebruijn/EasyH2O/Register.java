@@ -18,7 +18,7 @@ public class Register {
     private JLabel emailLabel;
 
     /**
-     * @Author Wouter de Bruijn github@electrogamez.nl
+     * @Author Wouter de Bruijn git@electrogamez.nl
      */
     public Register() {
 
