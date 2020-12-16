@@ -71,7 +71,7 @@ public class Dashboard extends JFrame {
 
             for (Regenton regenton : regentonnen) {
                 // Open ports for each user regenton
-                System.out.println("Opening Serial for" + regenton.id + "@" + regenton.comPort);
+                System.out.println("Opening Serial for ID: " + regenton.id + " @" + regenton.comPort);
                 regenton.openPort();
 
                 // Store regenton objects in array.
