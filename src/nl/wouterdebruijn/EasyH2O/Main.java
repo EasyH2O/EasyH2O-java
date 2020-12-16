@@ -1,12 +1,18 @@
 package nl.wouterdebruijn.EasyH2O;
 
+import nl.wouterdebruijn.EasyH2O.entities.User;
+
 import javax.swing.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
     public static MySQLConnector mySQLConnector;
-    public static SerialConnector serialConnector;
     public static JFrameManager jFrameManager;
+    public static List<Regenton> regentons;
 
     /**
      * Main function, creates the Dashboard instance and draws the JFrame.
@@ -24,9 +30,56 @@ public class Main {
          * Init MySQL Class.
          */
         mySQLConnector = new MySQLConnector();
-        serialConnector = new SerialConnector();
+    }
 
-        serialConnector.OpenPort();
+    /**
+     * Create Java list of all regenton objects from DB.
+     *
+     * @Author Wouter de Bruijn git@electrogamez.nl
+     */
+    private static void initRegentonnen() {
+        try {
+            ResultSet resultSet = mySQLConnector.query("SELECT * FROM regenton");
+
+            List<Regenton> regentonRawList = new ArrayList<>();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String comPort = resultSet.getString("comPort");
+                int ownerId = resultSet.getInt("owner");
+                User owner;
+
+                ResultSet userResults = mySQLConnector.query("SELECT * FROM user WHERE id = " + ownerId); //SQL Injection??! (Probably safe because this can only be a int.)
+                if (userResults.next()) {
+                    // Create user object from database user values.
+                    owner = User.fromHash(userResults.getInt("id"), userResults.getString("email"), userResults.getString("passwordHash"), userResults.getString("naam"));
+
+                    Regenton regenton = new Regenton(id, comPort, owner);
+                    regentonRawList.add(regenton);
+                }
+
+                Main.regentons = regentonRawList;
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    /**
+     * Get index in regentonArray from regentonId;
+     *
+     * @param regentonId id of a regenton.
+     * @return index of object.
+     * @Author Wouter de Bruijn git@electrogamez.nl
+     */
+    public static int indexById(int regentonId) {
+        for (Regenton regenton : Main.regentons) {
+            if (regenton.id == regentonId) {
+                return Main.regentons.indexOf(regenton);
+            }
+        }
+        return -1; // If we didn't find any by that id.;
     }
 
     /**
