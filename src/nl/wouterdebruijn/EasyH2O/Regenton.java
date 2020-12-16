@@ -1,9 +1,13 @@
 package nl.wouterdebruijn.EasyH2O;
+import java.sql.*;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
+import com.mysql.cj.Query;
+import com.mysql.cj.QueryResult;
 import com.mysql.cj.xdevapi.PreparableStatement;
+import com.mysql.cj.xdevapi.SelectStatement;
 import nl.wouterdebruijn.EasyH2O.entities.User;
 
 import java.net.DatagramPacket;
@@ -12,6 +16,7 @@ import java.sql.*;
 import static com.fazecast.jSerialComm.SerialPort.*;
 
 public class Regenton {
+    private static String query;
     public final int id;
     public final String comPort;
     public final User owner;
@@ -169,19 +174,33 @@ public class Regenton {
      * made by Luca
      */
 
-    public void getOldData(int regenton) throws SQLException {
+    public static void getOldData(int regenton) throws SQLException {
         Statement statement = Main.mySQLConnector.con.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * FROM `datapoint` WHERE `regenton` = " + regenton + ";");
 
         try {
+            String myDriver = "org.gjt.mm.mysql.Driver";
+            String myUrl = "jdbc:mysql://localhost/test";
+            Class.forName(myDriver);
+            Connection conn = DriverManager.getConnection(myUrl, "root", "0000L");
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next())
+            {
+                int id = rs.getInt("id");
+                String Name = rs.getString("first_name");
+                Date dateCreated = rs.getDate("date_created");
+                System.out.format("%s, %s, %s\n", id, Name,dateCreated);
 
-            if (Main.mySQLConnector.)
-
-
+                ///boolean isAdmin = rs.getBoolean("is_admin");
+                ///int numPoints = rs.getInt("num_points");
+                /// String lastName = rs.getString("last_name");
             }
+            st.close();
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.err.println("Got an exception! ");
+            System.err.println(ex.getMessage());
         }
 
     }
