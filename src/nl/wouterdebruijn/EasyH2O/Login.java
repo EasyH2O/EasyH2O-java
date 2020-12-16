@@ -22,6 +22,7 @@ public class Login {
         loginButton.addActionListener(new ActionListener() {
             /**
              * Login button
+             * @Author Riham Assem
              */
             @Override
             public void actionPerformed(ActionEvent e) {
