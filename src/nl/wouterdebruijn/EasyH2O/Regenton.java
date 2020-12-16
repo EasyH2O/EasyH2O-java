@@ -45,7 +45,7 @@ public class Regenton {
 
             // Add the event bases message listener
 
-            Regenton.MessageListener messageListener = new Regenton.MessageListener();
+            Regenton.MessageListener messageListener = new Regenton.MessageListener(this.id);
             serialPort.addDataListener(messageListener);
 
             System.out.println("Port is open :)");
@@ -91,6 +91,12 @@ public class Regenton {
 
 
     private static final class MessageListener implements SerialPortMessageListener {
+        public final int regentonId;
+
+        private MessageListener(int regentonId) {
+            this.regentonId = regentonId;
+        }
+
         @Override
         public int getListeningEvents() {
             return SerialPort.LISTENING_EVENT_DATA_RECEIVED;
@@ -117,25 +123,28 @@ public class Regenton {
         public void serialEvent(SerialPortEvent event) {
             byte[] delimitedMessage = event.getReceivedData();
             String message = new String(delimitedMessage);
-            if(message.equals("Switched to 0")|| message.equals("Switched to 1")) {
 
-                System.out.println("Received the following delimited message: " + message);
-            }
-            else if(message.equals("0")|| message.equals("1")) {
-
-                System.out.println("Received the following delimited message: " + message);
-            }
-            else {
-                System.out.println("Received the following delimited message: " + message);
-            }
-            try {
-                if (!Main.mySQLConnector.con.isClosed())
-                    Main.mySQLConnector.sendMicroBitData(new String(delimitedMessage));
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+            /*Check for incoming values*/
+            if (message.startsWith("FC")) { // Float Change, store value in DB.
+                storeFloatValues(regentonId, message);
+            } else if (message.startsWith("PC")) { // Pump Changed, store value in db, set local value
+                Main.regentons.get(Main.indexById(regentonId)).pumpEnabled = message.contains("1"); // Set boolean according to return string
+            } else {
+                System.out.println("Other return value: " + message);
             }
         }
     }
+
+    private static void storeFloatValues(int id, String message) {
+        System.out.println("Storing new float value for regenton: " + id);
+        try {
+            if (!Main.mySQLConnector.con.isClosed())
+                Main.mySQLConnector.sendMicroBitData(id, message);
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+    }
+
     /**
      * Close the connection to MySQL Database
      *
