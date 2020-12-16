@@ -24,10 +24,18 @@ public class Dashboard {
     private JPanel headerBar;
     private JLabel usernameLabel;
     private JProgressBar progressBar;
+    private JButton button1;
 
     private User currentUser;
+    private Regenton[] regentonnen;
 
     public Dashboard() {
+        button1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                regentonnen[0].getData();
+            }
+        });
     }
 
     /**
