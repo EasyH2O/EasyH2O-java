@@ -24,7 +24,7 @@ public class Regenton {
         this.commPorts = commPorts;
     }
 
-    public void OpenPort() {
+    public void openPort() {
         // SerialPort sp[] = SerialPort.getCommPorts("COM5");
 
         String poortName;
@@ -37,7 +37,10 @@ public class Regenton {
             return;
 
         }
-        if (sp.length == 1) {
+        else {
+            poortName= SerialPort.getCommPorts(commPorts);
+        }
+        /*if (sp.length == 1) {
             poortName = sp[0].getSystemPortName();
             System.out.println(poortName + " wordt nu gebruikt.");
         } else {
@@ -47,6 +50,7 @@ public class Regenton {
         System.out.println("Type poortnaam die je wilt gebruiken en druk Enter...");
         Scanner in = new Scanner(System.in);
         poortName = in.next();
+         */
 
         // boven opgegeven poort wordt aan serialPort toegekend
         // kijkt of de poort kan worden geopend
@@ -80,9 +84,25 @@ public class Regenton {
         } catch (Exception ex) {
             System.out.println("Fout bij schrijven naar seriële poort: " + ex);
         }
-        Scanner response = new Scanner(serialPort.getInputStream()).useDelimiter(";");
-        String Datafloats = response.next();
-        System.out.println("readUSB: " + Datafloats);
+    }
+    public void SwitchPump() {
+        try {
+            String cmd = "SP;";
+            byte[] MSG = cmd.getBytes();
+            serialPort.writeBytes(MSG, cmd.length());
+        } catch (Exception ex) {
+            System.out.println("Fout bij het schakelen van de pomp: " + ex);
+        }
+    }
+
+    public void PumpState() {
+        try {
+            String cmd = "PS;";
+            byte[] MSG = cmd.getBytes();
+            serialPort.writeBytes(MSG, cmd.length());
+        } catch (Exception ex) {
+            System.out.println("Fout bij het ophalen van status van de pomp: " + ex);
+        }
     }
 
 
@@ -133,7 +153,6 @@ public class Regenton {
             System.out.println("Port is closed :)");
         } else {
             System.out.println("Failed to close port :(");
-            return;
         }
     }
 
@@ -168,30 +187,6 @@ public class Regenton {
      * made by Luca
      */
 
-    public void SwitchPump() {
-        try {
-            String cmd = "SP;";
-            byte[] MSG = cmd.getBytes();
-            serialPort.writeBytes(MSG, cmd.length());
-        } catch (Exception ex) {
-            System.out.println("Fout bij het schakelen van de pomp: " + ex);
-        }
-        Scanner response = new Scanner(serialPort.getInputStream()).useDelimiter("\n");
-        String Data = response.next();
-        System.out.println( Data);
 
-    }
 
-    public void PumpState() {
-        try {
-            String cmd = "PS;";
-            byte[] MSG = cmd.getBytes();
-            serialPort.writeBytes(MSG, cmd.length());
-        } catch (Exception ex) {
-            System.out.println("Fout bij het ophalen van status van de pomp: " + ex);
-        }
-        Scanner response = new Scanner(serialPort.getInputStream()).useDelimiter("\n");
-        String Status = response.next();
-        System.out.println( Status);
-    }
 }
