@@ -182,7 +182,6 @@ public class Regenton {
                 String Email = resultSet.getNString("Get email van user");
                 String hashedPassword  = resultSet.getNString("Get hashedPassword van user");
                 System.out.println("ID:" + ID + "\nName:" + Name +"\nEmail:" + Email + "\nhashedPassword:" + hashedPassword );
-
             }
 
         } catch (Exception ex) {
