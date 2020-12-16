@@ -128,6 +128,9 @@ public class Regenton {
             /*Check for incoming values*/
             if (message.startsWith("FC")) { // Float Change, store value in DB.
                 storeFloatValues(regentonId, message);
+
+                // Refresh dashboard to update values.
+                Main.jFrameManager.dashboardInstance.updateCycle();
             } else if (message.startsWith("PV")) { // Pump Value, store value in db, set local value
                 Main.regentons.get(Main.indexById(regentonId)).pumpEnabled = message.contains("1"); // Set boolean according to return string
             } else {
