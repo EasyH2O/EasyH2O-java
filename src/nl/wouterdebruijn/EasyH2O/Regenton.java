@@ -13,10 +13,16 @@ import java.sql.Statement;
 import static com.fazecast.jSerialComm.SerialPort.*;
 
 public class Regenton {
-
+    public final int id;
+    public final String commPorts;
     public static SerialPort serialPort;
 
     private final byte[] buffer = new byte[1024];
+
+    public Regenton(int id, String commPorts) {
+        this.id = id;
+        this.commPorts = commPorts;
+    }
 
     public void OpenPort() {
         // SerialPort sp[] = SerialPort.getCommPorts("COM5");
