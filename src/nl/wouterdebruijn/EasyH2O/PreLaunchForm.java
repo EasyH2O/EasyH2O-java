@@ -25,7 +25,7 @@ public class PreLaunchForm {
         connectButton.addActionListener(new ActionListener() {
             /**
              * On MySQL Connect button
-             * @Author Wouter de Bruijn github@electrogamez.nl
+             * @Author Wouter de Bruijn git@electrogamez.nl
              */
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -41,13 +41,16 @@ public class PreLaunchForm {
         startDashboardButton.addActionListener(new ActionListener() {
             /**
              * On Start Dashboard button
-             * @Author Wouter de Bruijn github@electrogamez.nl
+             * @Author Wouter de Bruijn git@electrogamez.nl
              */
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     if (!Main.mySQLConnector.con.isClosed()) {
                         Main.jFrameManager.setContentPanel(JFrameManager.Frames.login);
+
+                        // Fill rain barrel array.
+                        Main.initRegentonnen();
                     } else {
                         throw new NullPointerException();
                     }

@@ -49,9 +49,10 @@ public class MySQLConnector {
      * @throws SQLException Throws error if function fails
      * @Author Luca
      */
-    public void sendMicroBitData(String microbitData) throws SQLException {
-        PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO `datapoint`(`regenton`, `data`) VALUES (1, ?)");
-        preparedStatement.setString(1, microbitData);
+    public void sendMicroBitData(int regentonId, String microbitData) throws SQLException {
+        PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO `datapoint`(`regenton`, `data`) VALUES (?, ?)");
+        preparedStatement.setInt(1, regentonId);
+        preparedStatement.setString(2, microbitData);
         preparedStatement.executeUpdate();
     }
 }

@@ -3,24 +3,29 @@ package nl.wouterdebruijn.EasyH2O;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
+import com.mysql.cj.xdevapi.PreparableStatement;
+import nl.wouterdebruijn.EasyH2O.entities.User;
 
-import java.sql.SQLException;
-import java.util.Scanner;
-
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 import static com.fazecast.jSerialComm.SerialPort.*;
 
 public class Regenton {
-
-    public static SerialPort serialPort;
+    public final int id;
+    public final String comPort;
+    public final User owner;
+    private SerialPort serialPort;
+    public boolean pumpEnabled = false;
 
     private final byte[] buffer = new byte[1024];
 
-    public void OpenPort() {
-        // SerialPort sp[] = SerialPort.getCommPorts("COM5");
+    public Regenton(int id, String comPort, User owner) {
+        this.id = id;
+        this.comPort = comPort;
+        this.owner = owner;
+    }
 
+    public void openPort() {
         String poortName;
         // sp is lijst van seriale poorten
         SerialPort[] sp = SerialPort.getCommPorts();
@@ -31,27 +36,16 @@ public class Regenton {
             return;
 
         }
-        if (sp.length == 1) {
-            poortName = sp[0].getSystemPortName();
-            System.out.println(poortName + " wordt nu gebruikt.");
-        } else {
-            System.out.println("Meerdere seriële poorten gedetecteerd: ");
-        }
-        // Vraagt om de juiste poort door te geven
-        System.out.println("Type poortnaam die je wilt gebruiken en druk Enter...");
-        Scanner in = new Scanner(System.in);
-        poortName = in.next();
-
         // boven opgegeven poort wordt aan serialPort toegekend
         // kijkt of de poort kan worden geopend
-        serialPort = SerialPort.getCommPort(poortName);
+        serialPort = SerialPort.getCommPort(comPort);
         if (serialPort.openPort()) {
             serialPort.setComPortParameters(9600, 8, ONE_STOP_BIT, NO_PARITY);
             serialPort.setFlowControl(FLOW_CONTROL_DISABLED);
 
             // Add the event bases message listener
 
-            Regenton.MessageListener messageListener = new Regenton.MessageListener();
+            Regenton.MessageListener messageListener = new Regenton.MessageListener(this.id);
             serialPort.addDataListener(messageListener);
 
             System.out.println("Port is open :)");
@@ -66,7 +60,7 @@ public class Regenton {
      * made by Erhan
      */
 
-    public void GetData() {
+    public void getData() {
         try {
             String CMD = "RF;";
             byte[] msg = CMD.getBytes();
@@ -74,13 +68,35 @@ public class Regenton {
         } catch (Exception ex) {
             System.out.println("Fout bij schrijven naar seriële poort: " + ex);
         }
-        Scanner response = new Scanner(serialPort.getInputStream()).useDelimiter(";");
-        String Datafloats = response.next();
-        System.out.println("readUSB: " + Datafloats);
+    }
+    public void switchPump() {
+        try {
+            String cmd = "SP;";
+            byte[] MSG = cmd.getBytes();
+            serialPort.writeBytes(MSG, cmd.length());
+        } catch (Exception ex) {
+            System.out.println("Fout bij het schakelen van de pomp: " + ex);
+        }
+    }
+
+    public void pumpState() {
+        try {
+            String cmd = "PS;";
+            byte[] MSG = cmd.getBytes();
+            serialPort.writeBytes(MSG, cmd.length());
+        } catch (Exception ex) {
+            System.out.println("Fout bij het ophalen van status van de pomp: " + ex);
+        }
     }
 
 
     private static final class MessageListener implements SerialPortMessageListener {
+        public final int regentonId;
+
+        private MessageListener(int regentonId) {
+            this.regentonId = regentonId;
+        }
+
         @Override
         public int getListeningEvents() {
             return SerialPort.LISTENING_EVENT_DATA_RECEIVED;
@@ -106,28 +122,43 @@ public class Regenton {
         @Override
         public void serialEvent(SerialPortEvent event) {
             byte[] delimitedMessage = event.getReceivedData();
-            System.out.println("Received the following delimited message: " + new String(delimitedMessage));
+            String message = new String(delimitedMessage);
 
-            try {
-                if (!Main.mySQLConnector.con.isClosed())
-                    Main.mySQLConnector.sendMicroBitData(new String(delimitedMessage));
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+            /*Check for incoming values*/
+            if (message.startsWith("FC")) { // Float Change, store value in DB.
+                storeFloatValues(regentonId, message);
+
+                // Refresh dashboard to update values.
+                Main.jFrameManager.dashboardInstance.updateCycle();
+            } else if (message.startsWith("PV")) { // Pump Value, store value in db, set local value
+                Main.regentons.get(Main.indexById(regentonId)).pumpEnabled = message.contains("1"); // Set boolean according to return string
+            } else {
+                System.out.println("Other return value: " + message);
             }
         }
     }
+
+    private static void storeFloatValues(int id, String message) {
+        System.out.println("Storing new float value for regenton: " + id);
+        try {
+            if (!Main.mySQLConnector.con.isClosed())
+                Main.mySQLConnector.sendMicroBitData(id, message);
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+    }
+
     /**
      * Close the connection to MySQL Database
      *
      * made by Erhan
      */
 
-    public void Disconnect() {
+    public void disconnect() {
         if (serialPort.closePort()) {
             System.out.println("Port is closed :)");
         } else {
             System.out.println("Failed to close port :(");
-            return;
         }
     }
 
@@ -137,55 +168,28 @@ public class Regenton {
      * made by Luca
      */
 
-    public int GetOldData(int regenton) {
+    public void getOldData(int regenton) {
+        Connection connect = null;
+        Statement statement = null;
+        PreparableStatement preparableStatement = null;
+        ResultSet resultSet = null;
+
         try {
-            Statement statement = Main.mySQLConnector.con.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM `datapoint` WHERE `regenton` = " + regenton + ";");
-
-            for (int teller = 0; teller < 5 && resultSet.next(); teller++) {
-                String data = resultSet.getString("data");
-                String tijd = resultSet.getString("timestamp");
-
-                System.out.println("Data: " + data);
-                System.out.println("Tijd: " + tijd);
+           // getClass();
+            connect = DriverManager.getConnection("hierin moet database tabel toevoegen");
+            statement = connect.createStatement();
+            resultSet = statement.executeQuery("SELECT * FROM DATABASE ");
+            while (resultSet.next()){
+                String Name = resultSet.getNString("get name van user name");
+                String  ID  = resultSet.getNString("get Id van user");
+                String Email = resultSet.getNString("Get email van user");
+                String hashedPassword  = resultSet.getNString("Get hashedPassword van user");
+                System.out.println("ID:" + ID + "\nName:" + Name +"\nEmail:" + Email + "\nhashedPassword:" + hashedPassword );
             }
 
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
-        return 0;
-    }
-
-    /**
-     * Close the connection to MySQL Database
-     *
-     * made by Luca
-     */
-
-    public void SwitchPump() {
-        try {
-            String cmd = "SP;";
-            byte[] MSG = cmd.getBytes();
-            serialPort.writeBytes(MSG, cmd.length());
         } catch (Exception ex) {
-            System.out.println("Fout bij het schakelen van de pomp: " + ex);
+            ex.printStackTrace();
         }
-        Scanner response = new Scanner(serialPort.getInputStream()).useDelimiter("\n");
-        String Data = response.next();
-        System.out.println( Data);
 
-    }
-
-    public void PumpState() {
-        try {
-            String cmd = "PS;";
-            byte[] MSG = cmd.getBytes();
-            serialPort.writeBytes(MSG, cmd.length());
-        } catch (Exception ex) {
-            System.out.println("Fout bij het ophalen van status van de pomp: " + ex);
-        }
-        Scanner response = new Scanner(serialPort.getInputStream()).useDelimiter("\n");
-        String Status = response.next();
-        System.out.println( Status);
     }
 }
