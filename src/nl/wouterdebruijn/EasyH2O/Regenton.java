@@ -6,6 +6,7 @@ import com.fazecast.jSerialComm.SerialPortMessageListener;
 import com.mysql.cj.xdevapi.PreparableStatement;
 import nl.wouterdebruijn.EasyH2O.entities.User;
 
+import java.net.DatagramPacket;
 import java.sql.*;
 
 import static com.fazecast.jSerialComm.SerialPort.*;
@@ -165,23 +166,15 @@ public class Regenton {
      * made by Luca
      */
 
-    public void getOldData(int regenton) {
-        Connection connect = null;
-        Statement statement = null;
-        PreparableStatement preparableStatement = null;
-        ResultSet resultSet = null;
+    public void getOldData(int regenton) throws SQLException {
+        Statement statement = Main.mySQLConnector.con.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM `datapoint` WHERE `regenton` = " + regenton + ";");
 
         try {
-           // getClass();
-            connect = DriverManager.getConnection("hierin moet database tabel toevoegen");
-            statement = connect.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM DATABASE ");
-            while (resultSet.next()){
-                String Name = resultSet.getNString("get name van user name");
-                String  ID  = resultSet.getNString("get Id van user");
-                String Email = resultSet.getNString("Get email van user");
-                String hashedPassword  = resultSet.getNString("Get hashedPassword van user");
-                System.out.println("ID:" + ID + "\nName:" + Name +"\nEmail:" + Email + "\nhashedPassword:" + hashedPassword );
+
+            if (Main.mySQLConnector.)
+
+
             }
 
         } catch (Exception ex) {
