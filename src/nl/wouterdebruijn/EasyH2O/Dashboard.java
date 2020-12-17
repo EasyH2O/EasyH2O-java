@@ -110,6 +110,12 @@ public class Dashboard extends JFrame {
         textArea1.setText(resultTextArea.toString());
     }
 
+    /**
+     * Set the pump label to the appropriate text and color.
+     *
+     * @param status true = powered on, false powered off.
+     * @Author Wouter de Bruijn git@rl.hedium.nl
+     */
     private void setPumpLabel(Boolean status) {
         if (status) {
             pumpStatusLabel.setText("Powered On");
@@ -135,7 +141,9 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Create local array with all rain barrel index that are used for this user.
+     * Create local array with all rain barrel index that are used for this user. Used to access specified barrels in main storage ArrayList.
+     *
+     * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     private void updateRegentonnen() {
         try {
@@ -155,6 +163,9 @@ public class Dashboard extends JFrame {
 
     /**
      * Connect to rain barrels from this user
+     * Calls Regenton.openPort() for every barrel associated to this user.
+     *
+     * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     private void connectRegentonnen() {
         for(int regentonId : regentonIds) {
