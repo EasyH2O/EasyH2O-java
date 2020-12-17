@@ -59,10 +59,9 @@ public class Regenton {
      * Close the connection to MySQL Database
      * <p>
      * made by Erhan
-     * @param s
      */
 
-    public void getData(String s) {
+    public void getData() {
         try {
             String CMD = "RF;";
             byte[] msg = CMD.getBytes();
