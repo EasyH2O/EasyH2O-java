@@ -3,6 +3,7 @@ package nl.wouterdebruijn.EasyH2O;
 import nl.wouterdebruijn.EasyH2O.entities.User;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
@@ -31,19 +32,27 @@ public class Dashboard extends JFrame {
     private JProgressBar progressBar;
     private JButton button1;
     private JTextArea textArea1;
+    private JLabel pumpLabel;
+    private JLabel pumpStatusLabel;
+    private JButton togglePumpButton;
 
     private User currentUser;
-    private Regenton[] regentonnen;
+    public int[] regentonIds;
 
     public Dashboard() {
-        button1.addActionListener(e -> regentonnen[0].getData());
+        // Refresh button
+        button1.addActionListener(e -> Main.regentons.get(regentonIds[0]).getData());
+
+        // Toggle pump button
+        togglePumpButton.addActionListener(e -> Main.regentons.get(regentonIds[0]).switchPump());
     }
 
     /**
      * Init the dashboard to work for the user.
      * Sets the username and other user variables.
-     *
+     * <p>
      * TODO: Implement Regenton.java
+     *
      * @param user user to register as logged in user.
      * @Author Wouter de Bruijn git@rl.hedium.nl
      */
@@ -51,6 +60,7 @@ public class Dashboard extends JFrame {
         this.currentUser = user;
         setUsername();
         updateRegentonnen();
+        connectRegentonnen();
 
         updateCycle();
     }
@@ -61,9 +71,13 @@ public class Dashboard extends JFrame {
      * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public void updateCycle() {
+        updateRegentonnen();
+
         StringBuilder resultTextArea = new StringBuilder();
 
-        for (Regenton regenton : regentonnen) {
+        for (int regentonId : regentonIds) {
+            Regenton regenton = Main.regentons.get(regentonId);
+
             try {
                 // TODO: Use function from Regenton class, ex: regenton.getData() returns String
                 ResultSet resultSet = Main.mySQLConnector.query("SELECT data FROM datapoint WHERE regenton = " + regenton.id + " ORDER BY id DESC LIMIT 3;");
@@ -92,10 +106,29 @@ public class Dashboard extends JFrame {
                 Main.jFrameManager.createDialogBox("Error while refreshing dashboard.");
                 throwables.printStackTrace();
             }
+
+            // Set Pump label
+            setPumpLabel(regenton.pumpEnabled);
         }
 
         // Update text area.
         textArea1.setText(resultTextArea.toString());
+    }
+
+    /**
+     * Set the pump label to the appropriate text and color.
+     *
+     * @param status true = powered on, false powered off.
+     * @Author Wouter de Bruijn git@rl.hedium.nl
+     */
+    private void setPumpLabel(Boolean status) {
+        if (status) {
+            pumpStatusLabel.setText("Powered On");
+            pumpStatusLabel.setForeground(Color.green);
+        } else{
+            pumpStatusLabel.setText("Powered Off");
+            pumpStatusLabel.setForeground(Color.red);
+        }
     }
 
     /**
@@ -112,22 +145,38 @@ public class Dashboard extends JFrame {
         usernameLabel.setText(currentUser.name);
     }
 
+    /**
+     * Create local array with all rain barrel index that are used for this user. Used to access specified barrels in main storage ArrayList.
+     *
+     * @Author Wouter de Bruijn git@rl.hedium.nl
+     */
     private void updateRegentonnen() {
         try {
             List<Regenton> regentonnen = currentUser.getRegentonnen();
 
-            for (Regenton regenton : regentonnen) {
-                // Open ports for each user regenton
-                System.out.println("Opening Serial for ID: " + regenton.id + " @" + regenton.comPort);
-                regenton.openPort();
+            // Create new array from regenton list.
+            regentonIds = new int[regentonnen.size()];
 
-                // Store regenton objects in array.
-                this.regentonnen = new Regenton[regentonnen.size()];
-                regentonnen.toArray(this.regentonnen);
+            for (int i=0; i < regentonnen.size(); i++) {
+                int index = Main.indexById(regentonnen.get(i).id);
+                regentonIds[i] = index;
             }
-            int size = regentonnen.size();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        }
+    }
+
+    /**
+     * Connect to rain barrels from this user
+     * Calls Regenton.openPort() for every barrel associated to this user.
+     *
+     * @Author Wouter de Bruijn git@rl.hedium.nl
+     */
+    private void connectRegentonnen() {
+        for(int regentonId : regentonIds) {
+            Regenton regenton = Main.regentons.get(regentonId);
+            System.out.println("Opening Serial for ID: " + regenton.id + " @" + regenton.comPort);
+            regenton.openPort();
         }
     }
 }
