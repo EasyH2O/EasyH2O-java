@@ -54,9 +54,10 @@ public class Regenton {
 
         }
     }
+
     /**
      * Close the connection to MySQL Database
-     *
+     * <p>
      * made by Erhan
      */
 
@@ -69,6 +70,7 @@ public class Regenton {
             System.out.println("Fout bij schrijven naar seriële poort: " + ex);
         }
     }
+
     public void switchPump() {
         try {
             String cmd = "SP;";
@@ -117,7 +119,6 @@ public class Regenton {
          *
          * @param event Gives the event properties, not used at this time.
          * @Author Erhan
-         *
          */
         @Override
         public void serialEvent(SerialPortEvent event) {
@@ -150,7 +151,7 @@ public class Regenton {
 
     /**
      * Close the connection to MySQL Database
-     *
+     * <p>
      * made by Erhan
      */
 
@@ -164,31 +165,25 @@ public class Regenton {
 
     /**
      * Close the connection to MySQL Database
-     *
+     * <p>
      * made by Luca
      */
 
-    public void getOldData(int regenton) throws SQLException {
 
+    public void getOldData(int regenton) {
         try {
-            String myDriver = "org.gjt.mm.mysql.Driver";
-            String myUrl = "jdbc:mysql://localhost/test";
-            Class.forName(myDriver);
-            Connection conn = DriverManager.getConnection(myUrl, "root", "0000L");
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(query);
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String Name = rs.getString("first_name");
-                Date dateCreated = rs.getDate("date_created");
-                System.out.format("%s, %s, %s\n", id, Name, dateCreated);
+            Statement statement = Main.mySQLConnector.con.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM `datapoint` WHERE `regenton` = " + regenton + ";");
 
+            for (int teller = 0; teller < 5 && resultSet.next(); teller++) {
+                String data = resultSet.getString("data");
+                String tijd = resultSet.getString("timestamp");
+                System.out.println("Data: " + data);
+                System.out.println("Tijd: " + tijd);
             }
-            st.close();
 
-        } catch (Exception ex) {
-            System.err.println("Got an exception! ");
-            System.err.println(ex.getMessage());
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
 
     }
