@@ -59,9 +59,10 @@ public class Regenton {
      * Close the connection to MySQL Database
      * <p>
      * made by Erhan
+     * @param s
      */
 
-    public void getData() {
+    public void getData(String s) {
         try {
             String CMD = "RF;";
             byte[] msg = CMD.getBytes();
@@ -178,21 +179,27 @@ public class Regenton {
      */
 
 
-    public void getOldData(int regenton) {
+    public String[] getOldData(String regenton) {
         try {
             Statement statement = Main.mySQLConnector.con.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM `datapoint` WHERE `regenton` = " + regenton + ";");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM `datapoint` WHERE `regenton` data = " + regenton + ";");
+            String data = null;
+            String tijd = null;
 
             for (int teller = 0; teller < 5 && resultSet.next(); teller++) {
-                String data = resultSet.getString("data");
-                String tijd = resultSet.getString("timestamp");
-                System.out.println("Data: " + data);
-                System.out.println("Tijd: " + tijd);
+                data = resultSet.getString("data");
+                tijd = resultSet.getString("timestamp");
+                ///this.getData("Data: " + data);
+                ///this.getData("Tijd: " + tijd);
+
             }
+            return new String[]{data, tijd};
+
 
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
+        return new String[0];
 
     }
 }
