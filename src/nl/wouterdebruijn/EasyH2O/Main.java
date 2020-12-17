@@ -35,7 +35,7 @@ public class Main {
     /**
      * Create Java list of all regenton objects from DB.
      *
-     * @Author Wouter de Bruijn git@electrogamez.nl
+     * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public static void initRegentonnen() {
         try {
@@ -72,7 +72,7 @@ public class Main {
      *
      * @param regentonId id of a regenton.
      * @return index of object.
-     * @Author Wouter de Bruijn git@electrogamez.nl
+     * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public static int indexById(int regentonId) {
         for (Regenton regenton : Main.regentons) {
@@ -86,7 +86,7 @@ public class Main {
     /**
      * Set dashboard theme to system default (Looks nicer!)
      *
-     * @Author Wouter de Bruijn git@electrogamez.nl
+     * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public static void setUISystemDefault() {
         // Set JFrame look and feel to Windows instead of Java.

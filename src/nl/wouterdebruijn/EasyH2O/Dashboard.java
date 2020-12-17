@@ -45,7 +45,7 @@ public class Dashboard extends JFrame {
      *
      * TODO: Implement Regenton.java
      * @param user user to register as logged in user.
-     * @Author Wouter de Bruijn git@electrogamez.nl
+     * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public void initUser(User user) {
         this.currentUser = user;
@@ -56,7 +56,9 @@ public class Dashboard extends JFrame {
     }
 
     /**
-     * Update dashboard content.
+     * Update dashboard content. Updates from user and rain barrel variables.
+     *
+     * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public void updateCycle() {
         StringBuilder resultTextArea = new StringBuilder();
@@ -100,7 +102,7 @@ public class Dashboard extends JFrame {
      * Update progress bar value. (Amount of water in the rain barrel.
      *
      * @param percentage Percentage of water in rain barrel. Should be 0 - 100
-     * @Author Wouter de Bruijn git@electrogamez.nl
+     * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public void updateProgress(int percentage) {
         progressBar.setValue(percentage);
