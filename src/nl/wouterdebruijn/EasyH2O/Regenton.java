@@ -132,7 +132,15 @@ public class Regenton {
                 // Refresh dashboard to update values.
                 Main.jFrameManager.dashboardInstance.updateCycle();
             } else if (message.startsWith("PV")) { // Pump Value, store value in db, set local value
-                Main.regentons.get(Main.indexById(regentonId)).pumpEnabled = message.contains("1"); // Set boolean according to return string
+
+                // Get and Change regenton in ArrayList.
+                int regentonIndex = Main.indexById(regentonId);
+                Regenton newState = Main.regentons.get(regentonIndex);
+                newState.pumpEnabled = message.contains("1");
+                Main.regentons.set(regentonIndex, newState);
+
+                // Refresh dashboard to update values.
+                Main.jFrameManager.dashboardInstance.updateCycle();
             } else {
                 System.out.println("Other return value: " + message);
             }

@@ -3,6 +3,7 @@ package nl.wouterdebruijn.EasyH2O;
 import nl.wouterdebruijn.EasyH2O.entities.User;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
@@ -31,9 +32,11 @@ public class Dashboard extends JFrame {
     private JProgressBar progressBar;
     private JButton button1;
     private JTextArea textArea1;
+    private JLabel pumpLabel;
+    private JLabel pumpStatusLabel;
 
     private User currentUser;
-    private Regenton[] regentonnen;
+    public Regenton[] regentonnen;
 
     public Dashboard() {
         button1.addActionListener(e -> regentonnen[0].getData());
@@ -42,8 +45,9 @@ public class Dashboard extends JFrame {
     /**
      * Init the dashboard to work for the user.
      * Sets the username and other user variables.
-     *
+     * <p>
      * TODO: Implement Regenton.java
+     *
      * @param user user to register as logged in user.
      * @Author Wouter de Bruijn git@rl.hedium.nl
      */
@@ -51,6 +55,7 @@ public class Dashboard extends JFrame {
         this.currentUser = user;
         setUsername();
         updateRegentonnen();
+        connectRegentonnen();
 
         updateCycle();
     }
@@ -61,6 +66,8 @@ public class Dashboard extends JFrame {
      * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public void updateCycle() {
+        updateRegentonnen();
+
         StringBuilder resultTextArea = new StringBuilder();
 
         for (Regenton regenton : regentonnen) {
@@ -92,10 +99,23 @@ public class Dashboard extends JFrame {
                 Main.jFrameManager.createDialogBox("Error while refreshing dashboard.");
                 throwables.printStackTrace();
             }
+
+            // Set Pump label
+            setPumpLabel(regenton.pumpEnabled);
         }
 
         // Update text area.
         textArea1.setText(resultTextArea.toString());
+    }
+
+    private void setPumpLabel(Boolean status) {
+        if (status) {
+            pumpStatusLabel.setText("Powered On");
+            pumpStatusLabel.setForeground(Color.green);
+        } else{
+            pumpStatusLabel.setText("Powered Off");
+            pumpStatusLabel.setForeground(Color.red);
+        }
     }
 
     /**
@@ -115,19 +135,17 @@ public class Dashboard extends JFrame {
     private void updateRegentonnen() {
         try {
             List<Regenton> regentonnen = currentUser.getRegentonnen();
-
-            for (Regenton regenton : regentonnen) {
-                // Open ports for each user regenton
-                System.out.println("Opening Serial for ID: " + regenton.id + " @" + regenton.comPort);
-                regenton.openPort();
-
-                // Store regenton objects in array.
-                this.regentonnen = new Regenton[regentonnen.size()];
-                regentonnen.toArray(this.regentonnen);
-            }
-            int size = regentonnen.size();
+            this.regentonnen = new Regenton[regentonnen.size()];
+            regentonnen.toArray(this.regentonnen);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        }
+    }
+
+    private void connectRegentonnen() {
+        for(Regenton regenton : regentonnen) {
+            System.out.println("Opening Serial for ID: " + regenton.id + " @" + regenton.comPort);
+            regenton.openPort();
         }
     }
 }
