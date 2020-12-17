@@ -36,10 +36,10 @@ public class Dashboard extends JFrame {
     private JLabel pumpStatusLabel;
 
     private User currentUser;
-    public Regenton[] regentonnen;
+    public int[] regentonIds;
 
     public Dashboard() {
-        button1.addActionListener(e -> regentonnen[0].getData());
+        button1.addActionListener(e -> Main.regentons.get(regentonIds[0]).getData());
     }
 
     /**
@@ -70,7 +70,9 @@ public class Dashboard extends JFrame {
 
         StringBuilder resultTextArea = new StringBuilder();
 
-        for (Regenton regenton : regentonnen) {
+        for (int regentonId : regentonIds) {
+            Regenton regenton = Main.regentons.get(regentonId);
+
             try {
                 // TODO: Use function from Regenton class, ex: regenton.getData() returns String
                 ResultSet resultSet = Main.mySQLConnector.query("SELECT data FROM datapoint WHERE regenton = " + regenton.id + " ORDER BY id DESC LIMIT 3;");
@@ -132,18 +134,31 @@ public class Dashboard extends JFrame {
         usernameLabel.setText(currentUser.name);
     }
 
+    /**
+     * Create local array with all rain barrel index that are used for this user.
+     */
     private void updateRegentonnen() {
         try {
             List<Regenton> regentonnen = currentUser.getRegentonnen();
-            this.regentonnen = new Regenton[regentonnen.size()];
-            regentonnen.toArray(this.regentonnen);
+
+            // Create new array from regenton list.
+            regentonIds = new int[regentonnen.size()];
+
+            for (int i=0; i < regentonnen.size(); i++) {
+                int index = Main.indexById(regentonnen.get(i).id);
+                regentonIds[i] = index;
+            }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
+    /**
+     * Connect to rain barrels from this user
+     */
     private void connectRegentonnen() {
-        for(Regenton regenton : regentonnen) {
+        for(int regentonId : regentonIds) {
+            Regenton regenton = Main.regentons.get(regentonId);
             System.out.println("Opening Serial for ID: " + regenton.id + " @" + regenton.comPort);
             regenton.openPort();
         }
