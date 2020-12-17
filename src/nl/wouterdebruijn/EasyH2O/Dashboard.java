@@ -40,7 +40,10 @@ public class Dashboard extends JFrame {
     public int[] regentonIds;
 
     public Dashboard() {
+        // Refresh button
         button1.addActionListener(e -> Main.regentons.get(regentonIds[0]).getData());
+
+        // Toggle pump button
         togglePumpButton.addActionListener(e -> Main.regentons.get(regentonIds[0]).switchPump());
     }
 
