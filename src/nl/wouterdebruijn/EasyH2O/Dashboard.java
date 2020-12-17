@@ -34,12 +34,14 @@ public class Dashboard extends JFrame {
     private JTextArea textArea1;
     private JLabel pumpLabel;
     private JLabel pumpStatusLabel;
+    private JButton togglePumpButton;
 
     private User currentUser;
     public int[] regentonIds;
 
     public Dashboard() {
         button1.addActionListener(e -> Main.regentons.get(regentonIds[0]).getData());
+        togglePumpButton.addActionListener(e -> Main.regentons.get(regentonIds[0]).switchPump());
     }
 
     /**
