@@ -67,7 +67,7 @@ public class JFrameManager {
      * Changes frame size to the content.
      * @Author Wouter de Bruijn git@rl.hedium.nl
      */
-    private void rePack() {
+    public void rePack() {
         jFrame.pack();
     }
 

@@ -1,6 +1,9 @@
 package nl.wouterdebruijn.EasyH2O;
 
 import nl.wouterdebruijn.EasyH2O.entities.User;
+import org.knowm.xchart.QuickChart;
+import org.knowm.xchart.XChartPanel;
+import org.knowm.xchart.XYChart;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,6 +38,7 @@ public class Dashboard extends JFrame {
     private JLabel pumpLabel;
     private JLabel pumpStatusLabel;
     private JButton togglePumpButton;
+    private JPanel graphOutputJPanel;
 
     private User currentUser;
     public int[] regentonIds;
@@ -45,6 +49,8 @@ public class Dashboard extends JFrame {
 
         // Toggle pump button
         togglePumpButton.addActionListener(e -> Main.regentons.get(regentonIds[0]).switchPump());
+
+        generateGraph();
     }
 
     /**
@@ -178,5 +184,30 @@ public class Dashboard extends JFrame {
             System.out.println("Opening Serial for ID: " + regenton.id + " @" + regenton.comPort);
             regenton.openPort();
         }
+    }
+
+    // Temp example code
+    /**
+     * Generate a really simple graph!
+     * @Author Wouter
+     */
+    private void generateGraph() {
+        // Some random data
+        double[] xData = new double[] { 0.0, 1.0, 2.0 };
+        double[] yData = new double[] { 2.0, 1.0, 0.0 };
+
+        // Create Chart
+        XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);
+
+        // Create Panel from chart
+        JPanel chartPanel = new XChartPanel<>(chart);
+
+        // Add that panel to our existing UI panel!
+        graphOutputJPanel.add(chartPanel); // graphOutputJPanel is aangemaakt in de .form file, de layout manager mag geen IntelIJ of JGoodies zijn, anders krijg je een null exception.
+        Main.repackUI(); // Update + resize JFrame
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 }

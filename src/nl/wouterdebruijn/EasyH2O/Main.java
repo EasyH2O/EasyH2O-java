@@ -97,4 +97,10 @@ public class Main {
             throwable.printStackTrace();
         }
     }
+
+    public static void repackUI() {
+        if (Main.jFrameManager != null) {
+            Main.jFrameManager.rePack();
+        }
+    }
 }

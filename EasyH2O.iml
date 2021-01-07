@@ -7,12 +7,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="jBCrypt-0.4.3" level="project" />
-    <orderEntry type="library" exported="" name="jSerialComm-2.6.2" level="project" />
-    <orderEntry type="library" exported="" name="mysql-connector-java-8.0.22" level="project" />
-    <orderEntry type="library" exported="" name="protobuf-java-3.11.4" level="project" />
-    <orderEntry type="library" exported="" name="org.knowm.xchart:xchart:3.6.6" level="project" />
     <orderEntry type="library" name="at.favre.lib:bcrypt:0.9.0" level="project" />
     <orderEntry type="library" name="org.mindrot:jbcrypt:0.4" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>
