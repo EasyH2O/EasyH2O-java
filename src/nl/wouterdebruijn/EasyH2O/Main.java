@@ -52,7 +52,7 @@ public class Main {
                 ResultSet userResults = mySQLConnector.query("SELECT * FROM user WHERE id = " + ownerId); //SQL Injection??! (Probably safe because this can only be a int.)
                 if (userResults.next()) {
                     // Create user object from database user values.
-                    owner = User.fromHash(userResults.getInt("id"), userResults.getString("email"), userResults.getString("passwordHash"), userResults.getString("naam"));
+                    owner = User.fromHash(userResults.getInt("id"), userResults.getString("email"), userResults.getString("passwordHash"), userResults.getString("naam"), userResults.getBoolean("isAdmin"));
 
                     Regenton regenton = new Regenton(id, comPort, owner);
                     regentonRawList.add(regenton);

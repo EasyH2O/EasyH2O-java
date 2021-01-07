@@ -30,7 +30,7 @@ public class Register {
                     throw new InputException("Password field can not be blank!");
                 if (nameField.getText().isBlank()) throw new InputException("Full Name field can not be blank!");
 
-                User newUser = new User(1, emailField.getText(), new String(passwordField.getPassword()), nameField.getText());
+                User newUser = new User(1, emailField.getText(), new String(passwordField.getPassword()), nameField.getText(), false);
                 newUser.save();
 
                 Main.jFrameManager.createDialogBox("User created! You will be send back to login.");

@@ -20,13 +20,15 @@ public class User
     public final int id;
     public final String name;
     public final String email;
+    public final Boolean isAdmin;
     private String hashedPassword;
 
-    public User(int id, String email, String password, String name)
+    public User(int id, String email, String password, String name, Boolean isAdmin)
     {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.isAdmin = isAdmin;
         this.hashedPassword = BCrypt.hashpw (password, BCrypt.gensalt ());
     }
 
@@ -86,8 +88,8 @@ public class User
      * @param name User full name
      * @return User instance.
      */
-    public static User fromHash(int id, String email, String hashedPassword, String name) {
-        User user = new User(id, email, "tmp", name);
+    public static User fromHash(int id, String email, String hashedPassword, String name, Boolean isAdmin) {
+        User user = new User(id, email, "tmp", name, isAdmin);
         user.hashedPassword = hashedPassword;
         return user;
     }
