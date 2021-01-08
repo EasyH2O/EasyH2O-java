@@ -110,24 +110,26 @@ public class ControlPanel {
                         public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                             try {
                                 System.out.println("Running closing event.");
-                                List<Regenton> regentonnen = currentUser.getRegentonnen();
 
+                                // TODO: Remove this code after the serial connections are made on application launch.
 
-//                                Closeing event doesnt work yet, serial connection is not closed right.
+                                // Get regenton list from the imitated user.
+                                List<Regenton> regentonnen = finalUsers[table.getSelectedRow()].getRegentonnen();
 
-                                // Create new array from regenton list.
-                                int[] regentonIds = new int[regentonnen.size()];
+                                // Prepare new array from regenton list.
+                                int[] regentonIndex = new int[regentonnen.size()];
 
+                                // Create a regenton index list from the regenton ids. This index matches the main storage array.
                                 for (int i=0; i < regentonnen.size(); i++) {
                                     int index = Main.indexById(regentonnen.get(i).id);
-                                    regentonIds[i] = index;
+                                    regentonIndex[i] = index;
                                 }
 
-                                for (int id : regentonIds) {
-                                    Regenton tmp = Main.regentons.get(id);
+                                // For each regenton that belongs to this user. We call the disconnect event to close the serial port.
+                                for (int index : regentonIndex) {
+                                    Regenton tmp = Main.regentons.get(index);
                                     tmp.disconnect();
                                 }
-
                             } catch (SQLException throwables) {
                                 throwables.printStackTrace();
                             }
