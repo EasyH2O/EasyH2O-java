@@ -9,10 +9,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -82,48 +84,49 @@ public class Dashboard extends JFrame {
     public void updateCycle() {
         updateRegentonnen();
 
-        StringBuilder resultTextArea = new StringBuilder();
+        // Create new arrayList where we store our information
+        ArrayList<Double> YGraphPoints = new ArrayList<>();
+        Regenton regenton = Main.regentons.get(regentonIds[0]); // TODO: Change 0 to selected barrel later @Riham
 
-        for (int regentonId : regentonIds) {
-            Regenton regenton = Main.regentons.get(regentonId);
+        try {
+            ResultSet resultSet = Main.mySQLConnector.query("SELECT data FROM datapoint WHERE regenton = " + regenton.id + " ORDER BY id DESC LIMIT 5;");
+            while (resultSet.next()) {
 
-            try {
-                // TODO: Use function from Regenton class, ex: regenton.getData() returns String
-                ResultSet resultSet = Main.mySQLConnector.query("SELECT data FROM datapoint WHERE regenton = " + regenton.id + " ORDER BY id DESC LIMIT 3;");
-                while (resultSet.next()) {
+                String[] valueArray = resultSet.getString("data").split(",");
 
-                    String[] valueArray = resultSet.getString("data").split(",");
+                int resultProcents = 0;
 
-                    int resultProcents = 0;
-
-                    // Calculate progress from raw string
-                    for (int i = 1; i < valueArray.length; i++) {
-                        if (valueArray[i].equals("0")) {
-                            resultProcents += 20;
-                        }
+                // Calculate progress from raw string
+                for (int i = 1; i < valueArray.length; i++) {
+                    if (valueArray[i].equals("0")) {
+                        resultProcents += 20;
                     }
-
-                    if (resultSet.isFirst()) { // Send first item to progress bar
-                        updateProgress(resultProcents);
-                    }
-
-                    // Generate log
-                    resultTextArea.append(regenton.id).append(": ").append(resultProcents);
-                    resultTextArea.append("\n");
                 }
 
-            } catch (SQLException throwables) {
-                Main.jFrameManager.createDialogBox("Error while refreshing dashboard.");
-                throwables.printStackTrace();
+                if (resultSet.isFirst()) { // Send first item to progress bar
+                    updateProgress(resultProcents);
+                }
+
+                // Add calculated % value to our list
+                YGraphPoints.add((double) resultProcents); // cast our int to a double so the graph gets it.
             }
 
-            // Set Pump label
-            setPumpLabel(regenton.pumpEnabled);
+        } catch (SQLException throwables) {
+            Main.jFrameManager.createDialogBox("Error while refreshing dashboard.");
+            throwables.printStackTrace();
         }
-        // Update text area.
-        textArea1.setText(resultTextArea.toString());
 
-        generateGraph ();
+        // Set Pump label
+        setPumpLabel(regenton.pumpEnabled);
+
+        // Convert Double ArrayList to double Array
+        double[] doubles = new double[YGraphPoints.size()];
+        for (int i = 0; i < doubles.length; i++) {
+            doubles[i] = YGraphPoints.get(i);
+        }
+
+        // Generate graph with new array
+        generateGraph(doubles);
     }
 
     /**
@@ -194,8 +197,9 @@ public class Dashboard extends JFrame {
     /**
      * Graph to display waterlevel
      * @author Emma
+     * @param resultProcents dataPoints for Graph
      */
-    public void generateGraph() throws SQLException
+    public void generateGraph(double[] resultProcents)
     {
         //gaan geen timestamps worden, tried it but too many errors and complications
         double[] xLaatsteMetingen = new double[] {1.0, 2.0, 3.0, 4.0, 5.0};
