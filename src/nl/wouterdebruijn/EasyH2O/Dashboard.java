@@ -11,7 +11,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * This class is bound to the JFrame.
@@ -50,7 +53,7 @@ public class Dashboard extends JFrame {
         // Toggle pump button
         togglePumpButton.addActionListener(e -> Main.regentons.get(regentonIds[0]).switchPump());
 
-        generateGraph();
+       // generateGraph();
     }
 
     /**
@@ -90,6 +93,7 @@ public class Dashboard extends JFrame {
                 while (resultSet.next()) {
 
                     String[] valueArray = resultSet.getString("data").split(",");
+
                     int resultProcents = 0;
 
                     // Calculate progress from raw string
@@ -116,9 +120,10 @@ public class Dashboard extends JFrame {
             // Set Pump label
             setPumpLabel(regenton.pumpEnabled);
         }
-
         // Update text area.
         textArea1.setText(resultTextArea.toString());
+
+        generateGraph ();
     }
 
     /**
@@ -186,25 +191,24 @@ public class Dashboard extends JFrame {
         }
     }
 
-    // Temp example code
     /**
-     * Generate a really simple graph!
-     * @Author Wouter
+     * Graph to display waterlevel
+     * @author Emma
      */
-    private void generateGraph() {
-        // Some random data
-        double[] xData = new double[] { 0.0, 1.0, 2.0 };
-        double[] yData = new double[] { 2.0, 1.0, 0.0 };
+    public void generateGraph() throws SQLException
+    {
+        //gaan geen timestamps worden, tried it but too many errors and complications
+        double[] xLaatsteMetingen = new double[] {1.0, 2.0, 3.0, 4.0, 5.0};
 
         // Create Chart
-        XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);
+        XYChart chart = QuickChart.getChart("Waterstand", "Laatste Metingen", "Procent", "y(x)", xLaatsteMetingen, resultProcents);
 
         // Create Panel from chart
-        JPanel chartPanel = new XChartPanel<>(chart);
+        JPanel chartPanel = new XChartPanel<XYChart>(chart);
 
-        // Add that panel to our existing UI panel!
+        // Add that panel to our panel!
         graphOutputJPanel.add(chartPanel); // graphOutputJPanel is aangemaakt in de .form file, de layout manager mag geen IntelIJ of JGoodies zijn, anders krijg je een null exception.
-        Main.repackUI(); // Update + resize JFrame
+        Main.jFrameManager.rePack(); // Resize + update screen.
     }
 
     private void createUIComponents() {
