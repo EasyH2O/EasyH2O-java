@@ -1,8 +1,10 @@
 package nl.wouterdebruijn.EasyH2O;
 
 import nl.wouterdebruijn.EasyH2O.entities.User;
+import nl.wouterdebruijn.EasyH2O.entities.WeatherPoint;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ public class Main {
     public static MySQLConnector mySQLConnector;
     public static JFrameManager jFrameManager;
     public static List<Regenton> regentons;
+    public static WeatherModule weatherModule;
 
     /**
      * Main function, creates the Dashboard instance and draws the JFrame.
@@ -30,6 +33,9 @@ public class Main {
          * Init MySQL Class.
          */
         mySQLConnector = new MySQLConnector();
+
+        // Init the Weather Module with API key.
+        weatherModule = new WeatherModule("768c924f01b1d82fecd790a58f1417e6");
     }
 
     /**
