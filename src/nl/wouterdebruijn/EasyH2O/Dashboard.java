@@ -1,22 +1,20 @@
 package nl.wouterdebruijn.EasyH2O;
 
 import nl.wouterdebruijn.EasyH2O.entities.User;
+import nl.wouterdebruijn.EasyH2O.entities.WeatherPoint;
+import nl.wouterdebruijn.EasyH2O.utils.JWeatherIcon;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Array;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * This class is bound to the JFrame.
@@ -31,9 +29,7 @@ public class Dashboard extends JFrame {
     private JPanel weatherFutureModule;
     private JPanel historyModule;
     private JLabel progressLabel;
-    private JLabel weatherLabel;
     private JLabel historyLabel;
-    private JLabel weatherFutureLabel;
     private JPanel headerUser;
     private JPanel headerBar;
     private JLabel usernameLabel;
@@ -74,6 +70,8 @@ public class Dashboard extends JFrame {
         connectRegentonnen();
 
         updateCycle();
+
+        displayWeather();
     }
 
     /**
@@ -215,7 +213,74 @@ public class Dashboard extends JFrame {
         Main.jFrameManager.rePack(); // Resize + update screen.
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
+    /**
+     * Display weather information on the dashboard.
+     */
+    private void displayWeather() {
+        try {
+            // Day codes corresponding to Unix DayId
+            String[] days = new String[] {
+                    "Zo",
+                    "Ma",
+                    "Di",
+                    "Wo",
+                    "Do",
+                    "Vr",
+                    "Za",
+            };
+
+            WeatherPoint today = Main.weatherModule.getToday();
+            weatherModule.add(generateWeatherModule(today, "Delft"));
+            Calendar calendar2 = Calendar.getInstance();
+            calendar2.setTime(today.date);
+            System.out.println(days[calendar2.get(Calendar.DAY_OF_WEEK) -1]);
+
+            WeatherPoint[] comingDays = Main.weatherModule.getUpcoming();
+
+            weatherFutureModule.setLayout(new GridLayout(0, 5));
+
+            for (int i=1; i < comingDays.length && i < 6; i++) { // Hard lock on 5 (We skip the first, because that is today)
+                WeatherPoint day = comingDays[i];
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(day.date);
+                weatherFutureModule.add(generateWeatherModule(day, days[calendar.get(Calendar.DAY_OF_WEEK) -1]));
+            }
+
+            Main.jFrameManager.rePack(); // Resize + update screen.
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Main.jFrameManager.createDialogBox(e.getMessage());
+        }
+    }
+
+    /**
+     * Generate new weather module.
+     * @param point Weather data that needs to be displayed.
+     * @param labelText Text to add inside of the module.
+     * @return Returns a new JPanel
+     */
+    private JPanel generateWeatherModule(WeatherPoint point, String labelText) {
+        try {
+            JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+            panel.add(new JWeatherIcon(point.iconId));
+
+            JPanel panelInner = new JPanel();
+            panelInner.setLayout(new BoxLayout(panelInner, BoxLayout.Y_AXIS));
+
+            panelInner.add(new JLabel(point.temp + "°C"));
+            panelInner.add(new JLabel(labelText));
+
+            panel.add(panelInner);
+
+            return panel;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Main.jFrameManager.createDialogBox(e.getMessage());
+        }
+        return new JPanel();
     }
 }
