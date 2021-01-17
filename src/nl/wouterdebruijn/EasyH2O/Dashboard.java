@@ -89,13 +89,19 @@ public class Dashboard extends JFrame {
         try {
             ResultSet resultSet = Main.mySQLConnector.query("SELECT data FROM datapoint WHERE regenton = " + regenton.id + " ORDER BY id DESC LIMIT 5;");
             while (resultSet.next()) {
+                // Get String
+                String rawString = resultSet.getString("data");
 
-                String[] valueArray = resultSet.getString("data").split(",");
+                // Remove last character (its a ;)
+                rawString = rawString.substring(0, rawString.length() - 1);
+                // split string on ,
+                String[] valueArray = rawString.split(",");
 
                 int resultProcents = 0;
 
                 // Calculate progress from raw string
                 for (int i = 1; i < valueArray.length; i++) {
+                    System.out.println(valueArray[i]);
                     if (valueArray[i].equals("0")) {
                         resultProcents += 20;
                     }
@@ -104,6 +110,8 @@ public class Dashboard extends JFrame {
                 if (resultSet.isFirst()) { // Send first item to progress bar
                     updateProgress(resultProcents);
                 }
+
+                System.out.println("Stored as: " + resultProcents);
 
                 // Add calculated % value to our list
                 YGraphPoints.add((double) resultProcents); // cast our int to a double so the graph gets it.
