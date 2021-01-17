@@ -235,7 +235,6 @@ public class Dashboard extends JFrame {
             weatherModule.add(generateWeatherModule(today, "Delft"));
             Calendar calendar2 = Calendar.getInstance();
             calendar2.setTime(today.date);
-            System.out.println(days[calendar2.get(Calendar.DAY_OF_WEEK) -1]);
 
             WeatherPoint[] comingDays = Main.weatherModule.getUpcoming();
 
