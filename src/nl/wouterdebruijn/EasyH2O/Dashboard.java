@@ -202,15 +202,17 @@ public class Dashboard extends JFrame {
         //gaan geen timestamps worden, tried it but too many errors and complications
         double[] xLaatsteMetingen = new double[] {1.0, 2.0, 3.0, 4.0, 5.0};
 
-        // Create Chart
-        XYChart chart = QuickChart.getChart("Waterstand", "Laatste Metingen", "Procent", "y(x)", xLaatsteMetingen, resultProcents);
+        if (resultProcents != null && resultProcents.length > 0) {
+            // Create Chart
+            XYChart chart = QuickChart.getChart("Waterstand", "Laatste Metingen", "Procent", "y(x)", xLaatsteMetingen, resultProcents);
 
-        // Create Panel from chart
-        JPanel chartPanel = new XChartPanel<XYChart>(chart);
+            // Create Panel from chart
+            JPanel chartPanel = new XChartPanel<XYChart>(chart);
 
-        // Add that panel to our panel!
-        graphOutputJPanel.add(chartPanel); // graphOutputJPanel is aangemaakt in de .form file, de layout manager mag geen IntelIJ of JGoodies zijn, anders krijg je een null exception.
-        Main.jFrameManager.rePack(); // Resize + update screen.
+            // Add that panel to our panel!
+            graphOutputJPanel.add(chartPanel); // graphOutputJPanel is aangemaakt in de .form file, de layout manager mag geen IntelIJ of JGoodies zijn, anders krijg je een null exception.
+            Main.jFrameManager.rePack(); // Resize + update screen.
+        }
     }
 
     /**
