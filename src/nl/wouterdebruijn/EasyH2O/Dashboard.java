@@ -202,7 +202,7 @@ public class Dashboard extends JFrame {
         //gaan geen timestamps worden, tried it but too many errors and complications
         double[] xLaatsteMetingen = new double[] {1.0, 2.0, 3.0, 4.0, 5.0};
 
-        if (resultProcents != null && resultProcents.length > 0) {
+        if (resultProcents != null && resultProcents.length >= 5) {
             // Create Chart
             XYChart chart = QuickChart.getChart("Waterstand", "Laatste Metingen", "Procent", "y(x)", xLaatsteMetingen, resultProcents);
 
