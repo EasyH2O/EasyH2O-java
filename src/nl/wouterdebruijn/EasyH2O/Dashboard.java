@@ -9,10 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Array;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -201,14 +198,23 @@ public class Dashboard extends JFrame {
      */
     public void generateGraph(double[] resultProcents)
     {
+        ResultSet rs = Main.mySQLConnector.query("SELECT date_format(timestamp, '%H:%i:%s') as `time` FROM datapoint;");
+        while(rs.next())
+        {
+            Time time = rs.getTime ("timestamp");
+        }
+
         //gaan geen timestamps worden, tried it but too many errors and complications
-        double[] xLaatsteMetingen = new double[] {1.0, 2.0, 3.0, 4.0, 5.0};
+        //double[] xLaatsteMetingen = new double[] {1.0, 2.0, 3.0, 4.0, 5.0};
 
         // Create Chart
-        XYChart chart = QuickChart.getChart("Waterstand", "Laatste Metingen", "Procent", "y(x)", xLaatsteMetingen, resultProcents);
+        XYChart chart = QuickChart.getChart("Waterstand", "Laatste Metingen", "Procent", "y(x)", , resultProcents);
 
         // Create Panel from chart
         JPanel chartPanel = new XChartPanel<XYChart>(chart);
+
+        //prevents duplicate graphs
+        graphOutputJPanel.removeAll();
 
         // Add that panel to our panel!
         graphOutputJPanel.add(chartPanel); // graphOutputJPanel is aangemaakt in de .form file, de layout manager mag geen IntelIJ of JGoodies zijn, anders krijg je een null exception.
