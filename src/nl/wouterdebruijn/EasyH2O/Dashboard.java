@@ -86,7 +86,7 @@ public class Dashboard extends JFrame {
         Regenton regenton = Main.regentons.get(regentonIds[0]); // TODO: Change 0 to selected barrel later @Riham
 
         try {
-            ResultSet resultSet = Main.mySQLConnector.query("SELECT data FROM datapoint WHERE regenton = " + regenton.id + " ORDER BY id DESC LIMIT 5;");
+            ResultSet resultSet = Main.mySQLConnector.query("SELECT data FROM datapoint WHERE regenton = " + regenton.id + " LIMIT 5;");
             while (resultSet.next()) {
 
                 String[] valueArray = resultSet.getString("data").split(",");
