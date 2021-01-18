@@ -91,6 +91,12 @@ public class Dashboard extends JFrame {
     public void updateCycle() {
         updateRegentonnen();
 
+        // If the user doesn't have any rain barrels, we don't execute the rest of the update cycle
+        if (regentonIds.length == 0) {
+            Main.jFrameManager.createDialogBox("User doesn't have any rain barrels!");
+            return;
+        }
+
         // Create new arrayList where we store our information
         ArrayList<Double> YGraphPoints = new ArrayList<>();
         Regenton regenton = Main.regentons.get(regentonIds[0]); // TODO: Change 0 to selected barrel later @Riham
