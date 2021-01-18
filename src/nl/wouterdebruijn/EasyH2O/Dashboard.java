@@ -198,17 +198,10 @@ public class Dashboard extends JFrame {
      */
     public void generateGraph(double[] resultProcents)
     {
-        ResultSet rs = Main.mySQLConnector.query("SELECT date_format(timestamp, '%H:%i:%s') as `time` FROM datapoint;");
-        while(rs.next())
-        {
-            Time time = rs.getTime ("timestamp");
-        }
-
-        //gaan geen timestamps worden, tried it but too many errors and complications
-        //double[] xLaatsteMetingen = new double[] {1.0, 2.0, 3.0, 4.0, 5.0};
+        double[] xLaatsteMetingen = new double[] {1.0, 2.0, 3.0, 4.0, 5.0};
 
         // Create Chart
-        XYChart chart = QuickChart.getChart("Waterstand", "Laatste Metingen", "Procent", "y(x)", , resultProcents);
+        XYChart chart = QuickChart.getChart("Waterstand", "Laatste Metingen", "Procent", "y(x)", xLaatsteMetingen, resultProcents);
 
         // Create Panel from chart
         JPanel chartPanel = new XChartPanel<XYChart>(chart);
