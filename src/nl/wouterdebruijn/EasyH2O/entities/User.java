@@ -86,7 +86,7 @@ public class User
      */
     public void delete() {
         try {
-            PreparedStatement preparedStatement = Main.mySQLConnector.con.prepareStatement("DELETE FROM `User` WHERE `id` = ?");
+            PreparedStatement preparedStatement = Main.mySQLConnector.con.prepareStatement("DELETE FROM `user` WHERE `id` = ?");
             preparedStatement.setInt(1, this.id);
             preparedStatement.executeUpdate();
 
