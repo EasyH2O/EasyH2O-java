@@ -9,14 +9,11 @@ import org.knowm.xchart.XYChart;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.sql.*;
 import java.util.*;
 import java.util.List;
 
@@ -76,6 +73,9 @@ public class Dashboard extends JFrame {
      */
     public void initUser(User user) {
         this.currentUser = user;
+
+        clearDashboard();
+
         setUsername();
         updateRegentonnen();
         connectRegentonnen();
@@ -83,6 +83,16 @@ public class Dashboard extends JFrame {
         updateCycle();
 
         displayWeather();
+    }
+
+    /**
+     * Clear all dynamically allocated modules on dashboard start
+     * @Author Wouter de Bruijn git@rl.hedium.nl
+     */
+    private void clearDashboard() {
+        weatherModule.removeAll();
+        weatherFutureModule.removeAll();
+        graphOutputJPanel.removeAll();
     }
 
     /**
