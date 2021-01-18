@@ -1,6 +1,8 @@
 package nl.wouterdebruijn.EasyH2O;
 
 import nl.wouterdebruijn.EasyH2O.entities.User;
+import nl.wouterdebruijn.EasyH2O.entities.WeatherPoint;
+import nl.wouterdebruijn.EasyH2O.utils.JWeatherIcon;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
@@ -9,6 +11,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.sql.*;
 import java.util.*;
 import java.util.List;
@@ -26,9 +33,7 @@ public class Dashboard extends JFrame {
     private JPanel weatherFutureModule;
     private JPanel historyModule;
     private JLabel progressLabel;
-    private JLabel weatherLabel;
     private JLabel historyLabel;
-    private JLabel weatherFutureLabel;
     private JPanel headerUser;
     private JPanel headerBar;
     private JLabel usernameLabel;
@@ -39,6 +44,7 @@ public class Dashboard extends JFrame {
     private JLabel pumpStatusLabel;
     private JButton togglePumpButton;
     private JPanel graphOutputJPanel;
+    private JButton deleteAccountButton;
 
     private User currentUser;
     public int[] regentonIds;
@@ -50,7 +56,13 @@ public class Dashboard extends JFrame {
         // Toggle pump button
         togglePumpButton.addActionListener(e -> Main.regentons.get(regentonIds[0]).switchPump());
 
-       // generateGraph();
+        // Delete user button
+        deleteAccountButton.addActionListener(e -> {
+            currentUser.delete();
+            Main.jFrameManager.setContentPanel(JFrameManager.Frames.login);
+            currentUser = null;
+            Main.jFrameManager.createDialogBox("Your user account was deleted!");
+        });
     }
 
     /**
@@ -69,6 +81,8 @@ public class Dashboard extends JFrame {
         connectRegentonnen();
 
         updateCycle();
+
+        displayWeather();
     }
 
     /**
@@ -79,15 +93,26 @@ public class Dashboard extends JFrame {
     public void updateCycle() {
         updateRegentonnen();
 
+        // If the user doesn't have any rain barrels, we don't execute the rest of the update cycle
+        if (regentonIds.length == 0) {
+            Main.jFrameManager.createDialogBox("User doesn't have any rain barrels!");
+            return;
+        }
+
         // Create new arrayList where we store our information
         ArrayList<Double> YGraphPoints = new ArrayList<>();
         Regenton regenton = Main.regentons.get(regentonIds[0]); // TODO: Change 0 to selected barrel later @Riham
 
         try {
-            ResultSet resultSet = Main.mySQLConnector.query("SELECT data FROM datapoint WHERE regenton = " + regenton.id + " ORDER BY ID DESC LIMIT 5;");
+            ResultSet resultSet = Main.mySQLConnector.query("SELECT data FROM datapoint WHERE regenton = " + regenton.id + " ORDER BY id DESC LIMIT 5;");
             while (resultSet.next()) {
+                // Get String
+                String rawString = resultSet.getString("data");
 
-                String[] valueArray = resultSet.getString("data").split(",");
+                // Remove last character (its a ;)
+                rawString = rawString.substring(0, rawString.length() - 1);
+                // split string on ,
+                String[] valueArray = rawString.split(",");
 
                 int resultProcents = 0;
 
@@ -122,8 +147,8 @@ public class Dashboard extends JFrame {
             doubles[i] = YGraphPoints.get(i);
         }
 
-        // Generate graph with new array
-        generateGraph(doubles);
+        // Generate graph with new array (Only Generate graph if we have enough data points.
+        if (doubles.length >= 5) generateGraph(doubles);
     }
 
     /**
@@ -136,7 +161,7 @@ public class Dashboard extends JFrame {
         if (status) {
             pumpStatusLabel.setText("Powered On");
             pumpStatusLabel.setForeground(Color.green);
-        } else{
+        } else {
             pumpStatusLabel.setText("Powered Off");
             pumpStatusLabel.setForeground(Color.red);
         }
@@ -168,7 +193,7 @@ public class Dashboard extends JFrame {
             // Create new array from regenton list.
             regentonIds = new int[regentonnen.size()];
 
-            for (int i=0; i < regentonnen.size(); i++) {
+            for (int i = 0; i < regentonnen.size(); i++) {
                 int index = Main.indexById(regentonnen.get(i).id);
                 regentonIds[i] = index;
             }
@@ -184,7 +209,7 @@ public class Dashboard extends JFrame {
      * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     private void connectRegentonnen() {
-        for(int regentonId : regentonIds) {
+        for (int regentonId : regentonIds) {
             Regenton regenton = Main.regentons.get(regentonId);
             System.out.println("Opening Serial for ID: " + regenton.id + " @" + regenton.comPort);
             regenton.openPort();
@@ -193,12 +218,12 @@ public class Dashboard extends JFrame {
 
     /**
      * Graph to display waterlevel
-     * @author Emma
+     *
      * @param resultProcents dataPoints for Graph
+     * @author Emma
      */
-    public void generateGraph(double[] resultProcents)
-    {
-        double[] xLaatsteMetingen = new double[] {1.0, 2.0, 3.0, 4.0, 5.0};
+    public void generateGraph(double[] resultProcents) {
+        double[] xLaatsteMetingen = new double[]{1.0, 2.0, 3.0, 4.0, 5.0};
 
         // Create Chart
         XYChart chart = QuickChart.getChart("Waterstand", "Laatste Metingen", "Procent", "y(x)", xLaatsteMetingen, resultProcents);
@@ -216,7 +241,74 @@ public class Dashboard extends JFrame {
         Main.jFrameManager.rePack(); // Resize + update screen.
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
+    /**
+     * Display weather information on the dashboard.
+     */
+    private void displayWeather() {
+        try {
+            // Day codes corresponding to Unix DayId
+            String[] days = new String[]{
+                    "Zo",
+                    "Ma",
+                    "Di",
+                    "Wo",
+                    "Do",
+                    "Vr",
+                    "Za",
+            };
+
+            WeatherPoint today = Main.weatherModule.getToday();
+            weatherModule.add(generateWeatherModule(today, "Delft"));
+            Calendar calendar2 = Calendar.getInstance();
+            calendar2.setTime(today.date);
+
+            WeatherPoint[] comingDays = Main.weatherModule.getUpcoming();
+
+            weatherFutureModule.setLayout(new GridLayout(0, 5));
+
+            for (int i = 1; i < comingDays.length && i < 6; i++) { // Hard lock on 5 (We skip the first, because that is today)
+                WeatherPoint day = comingDays[i];
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(day.date);
+                weatherFutureModule.add(generateWeatherModule(day, days[calendar.get(Calendar.DAY_OF_WEEK) - 1]));
+            }
+
+            Main.jFrameManager.rePack(); // Resize + update screen.
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Main.jFrameManager.createDialogBox(e.getMessage());
+        }
+    }
+
+    /**
+     * Generate new weather module.
+     *
+     * @param point     Weather data that needs to be displayed.
+     * @param labelText Text to add inside of the module.
+     * @return Returns a new JPanel
+     */
+    private JPanel generateWeatherModule(WeatherPoint point, String labelText) {
+        try {
+            JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+            panel.add(new JWeatherIcon(point.iconId));
+
+            JPanel panelInner = new JPanel();
+            panelInner.setLayout(new BoxLayout(panelInner, BoxLayout.Y_AXIS));
+
+            panelInner.add(new JLabel(point.temp + "°C"));
+            panelInner.add(new JLabel(labelText));
+
+            panel.add(panelInner);
+
+            return panel;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Main.jFrameManager.createDialogBox(e.getMessage());
+        }
+        return new JPanel();
     }
 }
