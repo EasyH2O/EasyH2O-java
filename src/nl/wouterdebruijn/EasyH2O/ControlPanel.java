@@ -125,11 +125,16 @@ public class ControlPanel {
                                     regentonIndex[i] = index;
                                 }
 
-                                // For each regenton that belongs to this user. We call the disconnect event to close the serial port.
-                                for (int index : regentonIndex) {
-                                    Regenton tmp = Main.regentons.get(index);
-                                    tmp.disconnect();
+                                try {
+                                    // For each regenton that belongs to this user. We call the disconnect event to close the serial port.
+                                    for (int index : regentonIndex) {
+                                        Regenton tmp = Main.regentons.get(index);
+                                        tmp.disconnect();
+                                    }
+                                } catch (Exception exception) {
+                                    System.out.println("Serial connection wasn't active, not closing.");
                                 }
+
                             } catch (SQLException throwables) {
                                 throwables.printStackTrace();
                             }
