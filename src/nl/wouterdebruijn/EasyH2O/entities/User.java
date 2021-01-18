@@ -81,6 +81,21 @@ public class User
     }
 
     /**
+     * Deletes user
+     * @Author =--=
+     */
+    public void delete() {
+        try {
+            PreparedStatement preparedStatement = Main.mySQLConnector.con.prepareStatement("DELETE FROM `User` WHERE `id` = ?");
+            preparedStatement.setInt(1, this.id);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    /**
      * Create a brand new User (encrypt password)
      * @param id User Id
      * @param email User email

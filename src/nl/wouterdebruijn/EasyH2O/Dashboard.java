@@ -9,6 +9,8 @@ import org.knowm.xchart.XYChart;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,6 +42,7 @@ public class Dashboard extends JFrame {
     private JLabel pumpStatusLabel;
     private JButton togglePumpButton;
     private JPanel graphOutputJPanel;
+    private JButton deleteAccountButton;
 
     private User currentUser;
     public int[] regentonIds;
@@ -51,7 +54,13 @@ public class Dashboard extends JFrame {
         // Toggle pump button
         togglePumpButton.addActionListener(e -> Main.regentons.get(regentonIds[0]).switchPump());
 
-       // generateGraph();
+        // Delete user button
+        deleteAccountButton.addActionListener(e -> {
+            currentUser.delete();
+            Main.jFrameManager.setContentPanel(JFrameManager.Frames.login);
+            currentUser = null;
+            Main.jFrameManager.createDialogBox("Your user account was deleted!");
+        });
     }
 
     /**
