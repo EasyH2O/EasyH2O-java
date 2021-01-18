@@ -16,6 +16,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.sql.*;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -116,7 +118,6 @@ public class Dashboard extends JFrame {
 
                 // Calculate progress from raw string
                 for (int i = 1; i < valueArray.length; i++) {
-                    System.out.println(valueArray[i]);
                     if (valueArray[i].equals("0")) {
                         resultProcents += 20;
                     }
@@ -125,8 +126,6 @@ public class Dashboard extends JFrame {
                 if (resultSet.isFirst()) { // Send first item to progress bar
                     updateProgress(resultProcents);
                 }
-
-                System.out.println("Stored as: " + resultProcents);
 
                 // Add calculated % value to our list
                 YGraphPoints.add((double) resultProcents); // cast our int to a double so the graph gets it.
@@ -140,14 +139,16 @@ public class Dashboard extends JFrame {
         // Set Pump label
         setPumpLabel(regenton.pumpEnabled);
 
+        Collections.reverse(YGraphPoints);
+
         // Convert Double ArrayList to double Array
         double[] doubles = new double[YGraphPoints.size()];
         for (int i = 0; i < doubles.length; i++) {
             doubles[i] = YGraphPoints.get(i);
         }
 
-        // Generate graph with new array
-        generateGraph(doubles);
+        // Generate graph with new array (Only Generate graph if we have enough data points.
+        if (doubles.length >= 5) generateGraph(doubles);
     }
 
     /**
@@ -160,7 +161,7 @@ public class Dashboard extends JFrame {
         if (status) {
             pumpStatusLabel.setText("Powered On");
             pumpStatusLabel.setForeground(Color.green);
-        } else{
+        } else {
             pumpStatusLabel.setText("Powered Off");
             pumpStatusLabel.setForeground(Color.red);
         }
@@ -192,7 +193,7 @@ public class Dashboard extends JFrame {
             // Create new array from regenton list.
             regentonIds = new int[regentonnen.size()];
 
-            for (int i=0; i < regentonnen.size(); i++) {
+            for (int i = 0; i < regentonnen.size(); i++) {
                 int index = Main.indexById(regentonnen.get(i).id);
                 regentonIds[i] = index;
             }
@@ -208,7 +209,7 @@ public class Dashboard extends JFrame {
      * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     private void connectRegentonnen() {
-        for(int regentonId : regentonIds) {
+        for (int regentonId : regentonIds) {
             Regenton regenton = Main.regentons.get(regentonId);
             System.out.println("Opening Serial for ID: " + regenton.id + " @" + regenton.comPort);
             regenton.openPort();
@@ -217,25 +218,27 @@ public class Dashboard extends JFrame {
 
     /**
      * Graph to display waterlevel
-     * @author Emma
+     *
      * @param resultProcents dataPoints for Graph
+     * @author Emma
      */
-    public void generateGraph(double[] resultProcents)
-    {
-        //gaan geen timestamps worden, tried it but too many errors and complications
-        double[] xLaatsteMetingen = new double[] {1.0, 2.0, 3.0, 4.0, 5.0};
+    public void generateGraph(double[] resultProcents) {
+        double[] xLaatsteMetingen = new double[]{1.0, 2.0, 3.0, 4.0, 5.0};
 
-        if (resultProcents != null && resultProcents.length >= 5) {
-            // Create Chart
-            XYChart chart = QuickChart.getChart("Waterstand", "Laatste Metingen", "Procent", "y(x)", xLaatsteMetingen, resultProcents);
+        // Create Chart
+        XYChart chart = QuickChart.getChart("Waterstand", "Laatste Metingen", "Procent", "y(x)", xLaatsteMetingen, resultProcents);
 
-            // Create Panel from chart
-            JPanel chartPanel = new XChartPanel<XYChart>(chart);
+        chart.getStyler().setToolTipsEnabled(true);
 
-            // Add that panel to our panel!
-            graphOutputJPanel.add(chartPanel); // graphOutputJPanel is aangemaakt in de .form file, de layout manager mag geen IntelIJ of JGoodies zijn, anders krijg je een null exception.
-            Main.jFrameManager.rePack(); // Resize + update screen.
-        }
+        // Create Panel from chart
+        JPanel chartPanel = new XChartPanel<XYChart>(chart);
+
+        //prevents duplicate graphs
+        graphOutputJPanel.removeAll();
+
+        // Add that panel to our panel!
+        graphOutputJPanel.add(chartPanel); // graphOutputJPanel is aangemaakt in de .form file, de layout manager mag geen IntelIJ of JGoodies zijn, anders krijg je een null exception.
+        Main.jFrameManager.rePack(); // Resize + update screen.
     }
 
     /**
@@ -244,7 +247,7 @@ public class Dashboard extends JFrame {
     private void displayWeather() {
         try {
             // Day codes corresponding to Unix DayId
-            String[] days = new String[] {
+            String[] days = new String[]{
                     "Zo",
                     "Ma",
                     "Di",
@@ -263,11 +266,11 @@ public class Dashboard extends JFrame {
 
             weatherFutureModule.setLayout(new GridLayout(0, 5));
 
-            for (int i=1; i < comingDays.length && i < 6; i++) { // Hard lock on 5 (We skip the first, because that is today)
+            for (int i = 1; i < comingDays.length && i < 6; i++) { // Hard lock on 5 (We skip the first, because that is today)
                 WeatherPoint day = comingDays[i];
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(day.date);
-                weatherFutureModule.add(generateWeatherModule(day, days[calendar.get(Calendar.DAY_OF_WEEK) -1]));
+                weatherFutureModule.add(generateWeatherModule(day, days[calendar.get(Calendar.DAY_OF_WEEK) - 1]));
             }
 
             Main.jFrameManager.rePack(); // Resize + update screen.
@@ -280,7 +283,8 @@ public class Dashboard extends JFrame {
 
     /**
      * Generate new weather module.
-     * @param point Weather data that needs to be displayed.
+     *
+     * @param point     Weather data that needs to be displayed.
      * @param labelText Text to add inside of the module.
      * @return Returns a new JPanel
      */
