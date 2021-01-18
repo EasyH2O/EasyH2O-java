@@ -10,10 +10,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * This class is bound to the JFrame.
@@ -86,7 +84,7 @@ public class Dashboard extends JFrame {
         Regenton regenton = Main.regentons.get(regentonIds[0]); // TODO: Change 0 to selected barrel later @Riham
 
         try {
-            ResultSet resultSet = Main.mySQLConnector.query("SELECT data FROM datapoint WHERE regenton = " + regenton.id + " LIMIT 5;");
+            ResultSet resultSet = Main.mySQLConnector.query("SELECT data FROM datapoint WHERE regenton = " + regenton.id + " ORDER BY ID DESC LIMIT 5;");
             while (resultSet.next()) {
 
                 String[] valueArray = resultSet.getString("data").split(",");
@@ -115,6 +113,8 @@ public class Dashboard extends JFrame {
 
         // Set Pump label
         setPumpLabel(regenton.pumpEnabled);
+
+        Collections.reverse(YGraphPoints);
 
         // Convert Double ArrayList to double Array
         double[] doubles = new double[YGraphPoints.size()];
@@ -202,6 +202,8 @@ public class Dashboard extends JFrame {
 
         // Create Chart
         XYChart chart = QuickChart.getChart("Waterstand", "Laatste Metingen", "Procent", "y(x)", xLaatsteMetingen, resultProcents);
+
+        chart.getStyler().setToolTipsEnabled(true);
 
         // Create Panel from chart
         JPanel chartPanel = new XChartPanel<XYChart>(chart);
