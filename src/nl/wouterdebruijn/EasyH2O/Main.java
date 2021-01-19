@@ -1,10 +1,8 @@
 package nl.wouterdebruijn.EasyH2O;
 
 import nl.wouterdebruijn.EasyH2O.entities.User;
-import nl.wouterdebruijn.EasyH2O.entities.WeatherPoint;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,30 +18,10 @@ public class Main {
     /**
      * Main function, creates the Dashboard instance and draws the JFrame.
      */
-    public static void main(String[] args) {
-        System.out.println("Program started!");
-
-        setUISystemDefault();
-
-        jFrameManager = new JFrameManager("EasyH2O Alpha 0.0.1");
-        jFrameManager.setDefaultPanel(JFrameManager.Frames.preLaunch);
-        jFrameManager.visible(true);
-
-        /*
-         * Init MySQL Class.
-         */
+    public static void initRegentonnen() {
         mySQLConnector = new MySQLConnector();
-
         // Init the Weather Module with API key.
         weatherModule = new WeatherModule("768c924f01b1d82fecd790a58f1417e6");
-    }
-
-    /**
-     * Create Java list of all regenton objects from DB.
-     *
-     * @Author Wouter de Bruijn git@rl.hedium.nl
-     */
-    public static void initRegentonnen() {
         try {
             ResultSet resultSet = mySQLConnector.query("SELECT * FROM regenton");
 
@@ -72,6 +50,27 @@ public class Main {
             throwables.printStackTrace();
         }
     }
+
+    public static void main(String[] args) {
+        System.out.println("Program started!");
+
+        setUISystemDefault();
+
+        jFrameManager = new JFrameManager("EasyH2O Alpha 0.0.1");
+        jFrameManager.setDefaultPanel(JFrameManager.Frames.preLaunch);
+        jFrameManager.visible(true);
+
+        /*
+         * Init MySQL Class.
+         */
+
+    }
+
+    /**
+     * Create Java list of all regenton objects from DB.
+     *
+     * @Author Wouter de Bruijn git@rl.hedium.nl
+     */
 
     /**
      * Get index in regentonArray from regentonId;
