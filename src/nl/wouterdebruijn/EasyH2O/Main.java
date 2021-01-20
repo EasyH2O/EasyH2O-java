@@ -45,7 +45,7 @@ public class Main {
         try {
             ResultSet resultSet = mySQLConnector.query("SELECT * FROM regenton");
 
-            List<Regenton> regentonRawList = new ArrayList<>();
+            ArrayList<Regenton> regentonRawList = new ArrayList<>();
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
@@ -62,13 +62,21 @@ public class Main {
                     regentonRawList.add(regenton);
                     System.out.println("Created and Saved regenton Instance: " + regenton.id);
                 }
-
-                Main.regentons = regentonRawList;
             }
+            Main.regentons = regentonRawList;
+            connectRegentonnen(regentonRawList);
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    public static void connectRegentonnen(ArrayList<Regenton> regentonList) {
+        regentonList.forEach(regenton -> {
+            if (!regenton.isOpen()) {
+                regenton.openPort();
+            }
+        });
     }
 
     /**

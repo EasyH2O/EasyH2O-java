@@ -137,7 +137,7 @@ public class Dashboard extends JFrame {
 
         setUsername();
         updateRegentonnen();
-        connectRegentonnen();
+        //connectRegentonnen();
         initBarrelSelector();
 
         updateCycle();
@@ -187,6 +187,8 @@ public class Dashboard extends JFrame {
      * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public void updateCycle() {
+        if (currentUser == null) return;
+
         updateRegentonnen(); // TODO: might not need this.
 
         // If the user doesn't have any rain barrels, we don't execute the rest of the update cycle

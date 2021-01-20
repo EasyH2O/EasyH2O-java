@@ -57,6 +57,12 @@ public class Regenton {
         }
     }
 
+    public boolean isOpen() {
+        if (serialPort == null) return false;
+        return serialPort.isOpen();
+    }
+
+
     /**
      * Close the connection to MySQL Database
      * <p>

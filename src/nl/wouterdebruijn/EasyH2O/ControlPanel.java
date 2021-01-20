@@ -9,7 +9,6 @@ import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ControlPanel {
     public JPanel contolPanel;
@@ -106,42 +105,6 @@ public class ControlPanel {
                     System.out.println("Row " + table.getSelectedRow() + " is selected!");
 
                     imitatingFrame = new JFrame("Dashboard as Admin, imitating " + finalUsers[table.getSelectedRow()].name);
-
-                    imitatingFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-                        @Override
-                        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                            try {
-                                System.out.println("Running closing event.");
-
-                                // TODO: Remove this code after the serial connections are made on application launch.
-
-                                // Get regenton list from the imitated user.
-                                List<Regenton> regentonnen = finalUsers[table.getSelectedRow()].getRegentonnen();
-
-                                // Prepare new array from regenton list.
-                                int[] regentonIndex = new int[regentonnen.size()];
-
-                                // Create a regenton index list from the regenton ids. This index matches the main storage array.
-                                for (int i = 0; i < regentonnen.size(); i++) {
-                                    int index = Main.indexById(regentonnen.get(i).id);
-                                    regentonIndex[i] = index;
-                                }
-
-                                try {
-                                    // For each regenton that belongs to this user. We call the disconnect event to close the serial port.
-                                    for (int index : regentonIndex) {
-                                        Regenton tmp = Main.regentons.get(index);
-                                        tmp.disconnect();
-                                    }
-                                } catch (Exception exception) {
-                                    System.out.println("Serial connection wasn't active, not closing.");
-                                }
-
-                            } catch (SQLException throwables) {
-                                throwables.printStackTrace();
-                            }
-                        }
-                    });
 
                     imitatingFrame.setContentPane(Main.jFrameManager.dashboardInstance.dashboard);
                     Main.jFrameManager.dashboardInstance.initUser(finalUsers[table.getSelectedRow()]);
