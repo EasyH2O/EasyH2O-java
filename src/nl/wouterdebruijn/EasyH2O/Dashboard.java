@@ -39,7 +39,6 @@ public class Dashboard extends JFrame {
     private JLabel usernameLabel;
     private JProgressBar progressBar;
     private JButton button1;
-    private JTextArea textArea1;
     private JLabel pumpLabel;
     private JLabel pumpStatusLabel;
     private JButton togglePumpButton;
@@ -242,6 +241,10 @@ public class Dashboard extends JFrame {
 
         // Generate graph with new array (Only Generate graph if we have enough data points.
         if (doubles.length >= 5) generateGraph(doubles);
+        else {
+            graphOutputJPanel.removeAll(); // Remove old graph;
+            Main.jFrameManager.rePack(); // Resize + update screen.
+        }
     }
 
     /**
