@@ -105,6 +105,9 @@ public class Dashboard extends JFrame {
                     preparedStatement.executeUpdate();
                     selectedRainbarrel = 0;
 
+                    // Disconnect from deleted rainbarrel
+                    regenton.disconnect();
+
                     // Update main array;
                     Main.initRegentonnen();
 
