@@ -51,9 +51,11 @@ public class Login {
                             // Password correct!
                             if (tmpUser.isAdmin) {
                                 Main.jFrameManager.setContentPanel(JFrameManager.Frames.controlpanel);
+                                Main.jFrameManager.imitating = true;
                                 Main.jFrameManager.controlPanelInstance.initUser(tmpUser); // Set current user to the logged in user. Used for controlpanel variables.
                             } else {
                                 Main.jFrameManager.setContentPanel(JFrameManager.Frames.dashboard);
+                                Main.jFrameManager.imitating = false;
                                 Main.jFrameManager.dashboardInstance.initUser(tmpUser); // Set current user to the logged in user. Used for dashboard user variables.
                             }
                         } else {

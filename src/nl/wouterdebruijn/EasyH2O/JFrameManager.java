@@ -9,6 +9,8 @@ public class JFrameManager {
     public final Dashboard dashboardInstance = new Dashboard();
     public final ControlPanel controlPanelInstance = new ControlPanel();
 
+    public boolean imitating = false;
+
     /**
      * JFrameManager instance, used for managing Jframe panels, has helper function for popups.
      *
@@ -55,6 +57,7 @@ public class JFrameManager {
 
     /**
      * Panels available for JFrame.
+     *
      * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public static class Frames {
@@ -67,10 +70,15 @@ public class JFrameManager {
 
     /**
      * Changes frame size to the content.
+     *
      * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public void rePack() {
-        jFrame.pack();
+        if (imitating && controlPanelInstance.imitatingFrame != null) {
+            controlPanelInstance.imitatingFrame.pack();
+        } else {
+            jFrame.pack();
+        }
     }
 
     /**
