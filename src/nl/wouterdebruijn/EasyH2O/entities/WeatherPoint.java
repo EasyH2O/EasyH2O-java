@@ -1,4 +1,5 @@
 package nl.wouterdebruijn.EasyH2O.entities;
+
 import java.util.Date;
 
 /**
@@ -13,13 +14,14 @@ public class WeatherPoint {
 
     /**
      * Create a new weatherpoint
-     * @param temp Weather Temperature
+     *
+     * @param temp     Weather Temperature
      * @param timeUnix Timestamp of temperature reading
-     * @param iconId Icon id corresponding to openweathermap.org
+     * @param iconId   Icon id corresponding to openweathermap.org
      * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public WeatherPoint(double temp, long timeUnix, String iconId) {
-        this.date = new Date(timeUnix*1000); // Java expects milliseconds, so we multiply
+        this.date = new Date(timeUnix * 1000); // Java expects milliseconds, so we multiply
         this.temp = temp;
         this.iconId = iconId;
     }

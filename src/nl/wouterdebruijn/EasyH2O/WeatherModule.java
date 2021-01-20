@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 /**
  * WeatherModule API, uses openweathermap.org
+ *
  * @Author Wouter de Bruijn git@rl.hedium.nl
  */
 public class WeatherModule {
@@ -21,6 +22,7 @@ public class WeatherModule {
 
     /**
      * Create a new API manager.
+     *
      * @param apiKey openweatherAPI Key.
      * @Author Wouter de Bruijn git@rl.hedium.nl
      */
@@ -30,6 +32,7 @@ public class WeatherModule {
 
     /**
      * Create a new API call
+     *
      * @param rawUrl openweathermap url without API key.
      * @return JSON object containing openweathermap's response
      * @throws IOException If the HTTP request fails, we throw an error.

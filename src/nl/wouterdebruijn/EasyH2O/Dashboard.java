@@ -17,7 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.*;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -145,8 +145,8 @@ public class Dashboard extends JFrame {
     public void initBarrelSelector() {
         ArrayList<String> barrelList = new ArrayList<>();
 
-        for (int i=0; i < this.regentonIds.length; i++) {
-            barrelList.add("Barrel " + (i+1));
+        for (int i = 0; i < this.regentonIds.length; i++) {
+            barrelList.add("Barrel " + (i + 1));
         }
 
         // Convert arraylist to array
@@ -160,7 +160,7 @@ public class Dashboard extends JFrame {
         barrelSelectorPanel.add(barrelSelector);
 
         barrelSelector.addActionListener(e -> {
-            JComboBox cb = (JComboBox)e.getSource();
+            JComboBox cb = (JComboBox) e.getSource();
             this.selectedRainbarrel = cb.getSelectedIndex();
             updateCycle();
         });
@@ -168,6 +168,7 @@ public class Dashboard extends JFrame {
 
     /**
      * Clear all dynamically allocated modules on dashboard start
+     *
      * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     private void clearDashboard() {

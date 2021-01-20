@@ -13,6 +13,8 @@ import java.util.List;
 
 public class ControlPanel {
     public JPanel contolPanel;
+    public JFrame imitatingFrame;
+
     private JLabel usernameLabel;
     private JLabel applicationHeader;
     private JLabel usernameLabelHeader;
@@ -103,9 +105,9 @@ public class ControlPanel {
                 public void mouseClicked(MouseEvent e) {
                     System.out.println("Row " + table.getSelectedRow() + " is selected!");
 
-                    JFrame frame = new JFrame("Dashboard as Admin, imitating " + finalUsers[table.getSelectedRow()].name);
+                    imitatingFrame = new JFrame("Dashboard as Admin, imitating " + finalUsers[table.getSelectedRow()].name);
 
-                    frame.addWindowListener(new java.awt.event.WindowAdapter() {
+                    imitatingFrame.addWindowListener(new java.awt.event.WindowAdapter() {
                         @Override
                         public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                             try {
@@ -120,7 +122,7 @@ public class ControlPanel {
                                 int[] regentonIndex = new int[regentonnen.size()];
 
                                 // Create a regenton index list from the regenton ids. This index matches the main storage array.
-                                for (int i=0; i < regentonnen.size(); i++) {
+                                for (int i = 0; i < regentonnen.size(); i++) {
                                     int index = Main.indexById(regentonnen.get(i).id);
                                     regentonIndex[i] = index;
                                 }
@@ -141,11 +143,11 @@ public class ControlPanel {
                         }
                     });
 
-                    frame.setContentPane(Main.jFrameManager.dashboardInstance.dashboard);
+                    imitatingFrame.setContentPane(Main.jFrameManager.dashboardInstance.dashboard);
                     Main.jFrameManager.dashboardInstance.initUser(finalUsers[table.getSelectedRow()]);
 
-                    frame.pack();
-                    frame.setVisible(true);
+                    imitatingFrame.pack();
+                    imitatingFrame.setVisible(true);
                 }
             });
             Main.repackUI();

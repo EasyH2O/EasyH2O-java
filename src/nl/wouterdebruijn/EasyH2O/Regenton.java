@@ -4,8 +4,10 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
 import nl.wouterdebruijn.EasyH2O.entities.User;
-import java.sql.*;
+
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import static com.fazecast.jSerialComm.SerialPort.*;
 

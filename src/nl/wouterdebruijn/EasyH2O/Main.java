@@ -1,10 +1,8 @@
 package nl.wouterdebruijn.EasyH2O;
 
 import nl.wouterdebruijn.EasyH2O.entities.User;
-import nl.wouterdebruijn.EasyH2O.entities.WeatherPoint;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
