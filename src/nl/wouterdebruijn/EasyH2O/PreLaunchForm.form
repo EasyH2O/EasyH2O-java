@@ -30,7 +30,9 @@
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <text value="root"/>
+            </properties>
           </component>
           <component id="31cfb" class="javax.swing.JLabel" binding="passwordLabel">
             <constraints>
@@ -54,7 +56,9 @@
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <text value="localhost"/>
+            </properties>
           </component>
           <component id="3832a" class="javax.swing.JLabel" binding="databaseLabel">
             <constraints>
@@ -70,7 +74,9 @@
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <text value="easy_h2o"/>
+            </properties>
           </component>
           <component id="ca452" class="javax.swing.JButton" binding="connectButton" default-binding="true">
             <constraints>
@@ -91,7 +97,9 @@
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <text value=""/>
+            </properties>
           </component>
         </children>
       </grid>

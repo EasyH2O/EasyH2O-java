@@ -9,7 +9,10 @@ import org.knowm.xchart.XYChart;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -42,16 +45,21 @@ public class Dashboard extends JFrame {
     private JButton togglePumpButton;
     private JPanel graphOutputJPanel;
     private JButton deleteAccountButton;
+    private JPanel barrelSelectorPanel;
+    private JButton addRainBarrelButton;
+    private JButton deleteRainBarrelButton;
 
     private User currentUser;
     public int[] regentonIds;
 
+    private int selectedRainbarrel = 0;
+
     public Dashboard() {
         // Refresh button
-        button1.addActionListener(e -> Main.regentons.get(regentonIds[0]).getData());
+        button1.addActionListener(e -> Main.regentons.get(regentonIds[selectedRainbarrel]).getData());
 
         // Toggle pump button
-        togglePumpButton.addActionListener(e -> Main.regentons.get(regentonIds[0]).switchPump());
+        togglePumpButton.addActionListener(e -> Main.regentons.get(regentonIds[selectedRainbarrel]).switchPump());
 
         // Delete user button
         deleteAccountButton.addActionListener(e -> {
@@ -59,6 +67,55 @@ public class Dashboard extends JFrame {
             Main.jFrameManager.setContentPanel(JFrameManager.Frames.login);
             currentUser = null;
             Main.jFrameManager.createDialogBox("Your user account was deleted!");
+        });
+
+        //  Add Barrel button
+        addRainBarrelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String comPort = JOptionPane.showInputDialog(Main.jFrameManager.jFrame, "Specify COM-Port");
+
+                try {
+                    PreparedStatement preparedStatement = Main.mySQLConnector.con.prepareStatement("INSERT INTO `easy_h2o`.`regenton` (`owner`, `comPort`) VALUES (?, ?)");
+                    preparedStatement.setInt(1, currentUser.id);
+                    preparedStatement.setString(2, comPort);
+                    preparedStatement.executeUpdate();
+
+                    // Update main array;
+                    Main.initRegentonnen();
+
+                    // Update dashboard
+                    initUser(currentUser);
+
+                    Main.jFrameManager.createDialogBox(" Created!");
+                } catch (SQLException throwables) {
+                    Main.jFrameManager.createDialogBox("Error while saving to database.");
+                    throwables.printStackTrace();
+                }
+            }
+        });
+
+        // Delete barrel button
+        deleteRainBarrelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    PreparedStatement preparedStatement = Main.mySQLConnector.con.prepareStatement("DELETE FROM `regenton` WHERE (`id` = ?)");
+                    Regenton regenton = Main.regentons.get(regentonIds[selectedRainbarrel]);
+                    preparedStatement.setInt(1, regenton.id);
+                    preparedStatement.executeUpdate();
+                    selectedRainbarrel = 0;
+
+                    // Update main array;
+                    Main.initRegentonnen();
+
+                    // Update dashboard;
+                    initUser(currentUser);
+                } catch (SQLException throwables) {
+                    Main.jFrameManager.createDialogBox("Could not delete rain barrel.");
+                    throwables.printStackTrace();
+                }
+            }
         });
     }
 
@@ -79,10 +136,35 @@ public class Dashboard extends JFrame {
         setUsername();
         updateRegentonnen();
         connectRegentonnen();
+        initBarrelSelector();
 
         updateCycle();
 
         displayWeather();
+    }
+
+    public void initBarrelSelector() {
+        ArrayList<String> barrelList = new ArrayList<>();
+
+        for (int i=0; i < this.regentonIds.length; i++) {
+            barrelList.add("Barrel " + (i+1));
+        }
+
+        // Convert arraylist to array
+        String[] barrels = new String[barrelList.size()];
+        barrels = barrelList.toArray(barrels);
+
+        JComboBox barrelSelector = new JComboBox(barrels);
+
+        barrelSelectorPanel.setLayout(new GridLayout(0, 1));
+
+        barrelSelectorPanel.add(barrelSelector);
+
+        barrelSelector.addActionListener(e -> {
+            JComboBox cb = (JComboBox)e.getSource();
+            this.selectedRainbarrel = cb.getSelectedIndex();
+            updateCycle();
+        });
     }
 
     /**
@@ -93,6 +175,7 @@ public class Dashboard extends JFrame {
         weatherModule.removeAll();
         weatherFutureModule.removeAll();
         graphOutputJPanel.removeAll();
+        barrelSelectorPanel.removeAll();
     }
 
     /**
@@ -101,7 +184,7 @@ public class Dashboard extends JFrame {
      * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public void updateCycle() {
-        updateRegentonnen();
+        updateRegentonnen(); // TODO: might not need this.
 
         // If the user doesn't have any rain barrels, we don't execute the rest of the update cycle
         if (regentonIds.length == 0) {
@@ -111,7 +194,7 @@ public class Dashboard extends JFrame {
 
         // Create new arrayList where we store our information
         ArrayList<Double> YGraphPoints = new ArrayList<>();
-        Regenton regenton = Main.regentons.get(regentonIds[0]); // TODO: Change 0 to selected barrel later @Riham
+        Regenton regenton = Main.regentons.get(regentonIds[selectedRainbarrel]);
 
         try {
             ResultSet resultSet = Main.mySQLConnector.query("SELECT data FROM datapoint WHERE regenton = " + regenton.id + " ORDER BY id DESC LIMIT 5;");
