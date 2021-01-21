@@ -172,7 +172,7 @@ public class Regenton {
      */
 
     public void disconnect() {
-        if (!serialPort.isOpen()) return;
+        if (!isOpen()) return;
         if (serialPort.closePort()) {
             System.out.println("Port is closed :)");
         } else {
