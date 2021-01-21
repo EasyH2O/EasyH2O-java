@@ -13,6 +13,7 @@ public class Main {
     public static MySQLConnector mySQLConnector;
     public static JFrameManager jFrameManager;
     public static List<Regenton> regentons;
+    public static WeatherModule weatherModule;
 
     /**
      * Main function, creates the Dashboard instance and draws the JFrame.
@@ -30,12 +31,15 @@ public class Main {
          * Init MySQL Class.
          */
         mySQLConnector = new MySQLConnector();
+
+        // Init the Weather Module with API key.
+        weatherModule = new WeatherModule("768c924f01b1d82fecd790a58f1417e6");
     }
 
     /**
      * Create Java list of all regenton objects from DB.
      *
-     * @Author Wouter de Bruijn git@electrogamez.nl
+     * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public static void initRegentonnen() {
         try {
@@ -52,7 +56,7 @@ public class Main {
                 ResultSet userResults = mySQLConnector.query("SELECT * FROM user WHERE id = " + ownerId); //SQL Injection??! (Probably safe because this can only be a int.)
                 if (userResults.next()) {
                     // Create user object from database user values.
-                    owner = User.fromHash(userResults.getInt("id"), userResults.getString("email"), userResults.getString("passwordHash"), userResults.getString("naam"));
+                    owner = User.fromHash(userResults.getInt("id"), userResults.getString("email"), userResults.getString("passwordHash"), userResults.getString("naam"), userResults.getBoolean("isAdmin"));
 
                     Regenton regenton = new Regenton(id, comPort, owner);
                     regentonRawList.add(regenton);
@@ -72,7 +76,7 @@ public class Main {
      *
      * @param regentonId id of a regenton.
      * @return index of object.
-     * @Author Wouter de Bruijn git@electrogamez.nl
+     * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public static int indexById(int regentonId) {
         for (Regenton regenton : Main.regentons) {
@@ -86,7 +90,7 @@ public class Main {
     /**
      * Set dashboard theme to system default (Looks nicer!)
      *
-     * @Author Wouter de Bruijn git@electrogamez.nl
+     * @Author Wouter de Bruijn git@rl.hedium.nl
      */
     public static void setUISystemDefault() {
         // Set JFrame look and feel to Windows instead of Java.
@@ -95,6 +99,12 @@ public class Main {
 
         } catch (Throwable throwable) {
             throwable.printStackTrace();
+        }
+    }
+
+    public static void repackUI() {
+        if (Main.jFrameManager != null) {
+            Main.jFrameManager.rePack();
         }
     }
 }

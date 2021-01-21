@@ -42,13 +42,22 @@ public class Login {
                         String name = resultSet.getString("naam");
                         String hash = resultSet.getString("passwordHash");
                         String email = resultSet.getString("email");
+                        Boolean isAdmin = resultSet.getBoolean("isAdmin");
 
-                        User tmpUser = User.fromHash(id, email, hash, name);
+                        User tmpUser = User.fromHash(id, email, hash, name, isAdmin);
 
+                        // Split admin / normal users.
                         if (tmpUser.validatePassword(inputPassword)) {
                             // Password correct!
-                            Main.jFrameManager.setContentPanel(JFrameManager.Frames.dashboard);
-                            Main.jFrameManager.dashboardInstance.initUser(tmpUser); // Set current user to the logged in user. Used for dashboard user variables.
+                            if (tmpUser.isAdmin) {
+                                Main.jFrameManager.setContentPanel(JFrameManager.Frames.controlpanel);
+                                Main.jFrameManager.imitating = true;
+                                Main.jFrameManager.controlPanelInstance.initUser(tmpUser); // Set current user to the logged in user. Used for controlpanel variables.
+                            } else {
+                                Main.jFrameManager.setContentPanel(JFrameManager.Frames.dashboard);
+                                Main.jFrameManager.imitating = false;
+                                Main.jFrameManager.dashboardInstance.initUser(tmpUser); // Set current user to the logged in user. Used for dashboard user variables.
+                            }
                         } else {
                             Main.jFrameManager.createDialogBox("Incorrect username or password.");
                         }

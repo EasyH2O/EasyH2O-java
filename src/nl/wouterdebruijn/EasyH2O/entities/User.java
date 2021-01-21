@@ -15,19 +15,19 @@ import java.util.List;
  *
  * @author Emma
  */
-public class User
-{
+public class User {
     public final int id;
     public final String name;
     public final String email;
+    public final Boolean isAdmin;
     private String hashedPassword;
 
-    public User(int id, String email, String password, String name)
-    {
+    public User(int id, String email, String password, String name, Boolean isAdmin) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.hashedPassword = BCrypt.hashpw (password, BCrypt.gensalt ());
+        this.isAdmin = isAdmin;
+        this.hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
     /**
@@ -35,8 +35,7 @@ public class User
      * @return true if password matches hashedPassword else return false
      * @author Emma
      */
-    public boolean validatePassword(String password)
-    {
+    public boolean validatePassword(String password) {
         return BCrypt.checkpw(password, hashedPassword);
     }
 
@@ -56,6 +55,7 @@ public class User
 
     /**
      * Gets regentonnen from database associated with this user.
+     *
      * @return List of Regenton objects.
      * @throws SQLException on mySQL error.
      * @Author Riham - 19075057@student.hhs.nl
@@ -79,15 +79,32 @@ public class User
     }
 
     /**
+     * Deletes user
+     *
+     * @Author =--=
+     */
+    public void delete() {
+        try {
+            PreparedStatement preparedStatement = Main.mySQLConnector.con.prepareStatement("DELETE FROM `user` WHERE `id` = ?");
+            preparedStatement.setInt(1, this.id);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    /**
      * Create a brand new User (encrypt password)
-     * @param id User Id
-     * @param email User email
+     *
+     * @param id             User Id
+     * @param email          User email
      * @param hashedPassword Password hash of user.
-     * @param name User full name
+     * @param name           User full name
      * @return User instance.
      */
-    public static User fromHash(int id, String email, String hashedPassword, String name) {
-        User user = new User(id, email, "tmp", name);
+    public static User fromHash(int id, String email, String hashedPassword, String name, Boolean isAdmin) {
+        User user = new User(id, email, "tmp", name, isAdmin);
         user.hashedPassword = hashedPassword;
         return user;
     }
