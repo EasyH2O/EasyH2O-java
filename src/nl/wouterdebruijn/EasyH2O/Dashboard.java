@@ -86,7 +86,7 @@ public class Dashboard extends JFrame {
                     // Update dashboard
                     initUser(currentUser);
 
-                    Main.jFrameManager.createDialogBox(" Created!");
+                    Main.jFrameManager.createDialogBox("Created!");
                 } catch (SQLException throwables) {
                     Main.jFrameManager.createDialogBox("Error while saving to database.");
                     throwables.printStackTrace();

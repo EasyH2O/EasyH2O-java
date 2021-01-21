@@ -59,7 +59,7 @@ public class Regenton {
 
     public boolean isOpen() {
         if (serialPort == null) return false;
-        return serialPort.isOpen();
+        else return serialPort.isOpen();
     }
 
 

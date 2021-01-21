@@ -43,6 +43,14 @@ public class Main {
      */
     public static void initRegentonnen() {
         try {
+            if (Main.regentons != null && Main.regentons.size() > 0) {
+                for (Regenton regenton : regentons) {
+                    if (regenton.isOpen()) {
+                        regenton.disconnect();
+                    }
+                }
+            }
+
             ResultSet resultSet = mySQLConnector.query("SELECT * FROM regenton");
 
             ArrayList<Regenton> regentonRawList = new ArrayList<>();
